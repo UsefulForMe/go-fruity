@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/UsefulForMe/go-ecommerce/errs"
+	"github.com/UsefulForMe/go-ecommerce/logger"
 	"gorm.io/gorm"
 )
 
@@ -17,8 +18,9 @@ type DefaultUserRepository struct {
 	db *gorm.DB
 }
 
-func (d DefaultUserRepository) Save(user User) (*uint, *errs.AppError) {
+func (d DefaultUserRepository) Save(user *User) (*uint, *errs.AppError) {
 	if err := d.db.Create(&user).Error; err != nil {
+		logger.Error("Error when create user " + err.Error())
 		return nil, errs.NewUnexpectedError(err.Error())
 	}
 	return &user.ID, nil
@@ -27,6 +29,7 @@ func (d DefaultUserRepository) Save(user User) (*uint, *errs.AppError) {
 func (d DefaultUserRepository) FindById(id uint) (*User, *errs.AppError) {
 	var user User
 	if err := d.db.First(user, id).Error; err != nil {
+		logger.Error("Error when find user by id " + err.Error())
 		return nil, errs.NewUnexpectedError(err.Error())
 	}
 	return &user, nil
@@ -35,6 +38,7 @@ func (d DefaultUserRepository) FindById(id uint) (*User, *errs.AppError) {
 func (d DefaultUserRepository) FindAll() ([]User, *errs.AppError) {
 	var users []User
 	if err := d.db.Find(&users).Error; err != nil {
+		logger.Error("Error when find all users " + err.Error())
 		return nil, errs.NewUnexpectedError(err.Error())
 	}
 	return users, nil
@@ -42,6 +46,7 @@ func (d DefaultUserRepository) FindAll() ([]User, *errs.AppError) {
 
 func (d DefaultUserRepository) Update(user *User) *errs.AppError {
 	if err := d.db.Save(user).Error; err != nil {
+		logger.Error("Error when update user " + err.Error())
 		return errs.NewUnexpectedError(err.Error())
 	}
 	return nil
@@ -49,7 +54,12 @@ func (d DefaultUserRepository) Update(user *User) *errs.AppError {
 
 func (d DefaultUserRepository) Delete(id uint) *errs.AppError {
 	if err := d.db.Delete(User{}, id).Error; err != nil {
+		logger.Error("Error when delete user " + err.Error())
 		return errs.NewUnexpectedError(err.Error())
 	}
 	return nil
+}
+
+func NewUserRepository(db *gorm.DB) *DefaultUserRepository {
+	return &DefaultUserRepository{db}
 }

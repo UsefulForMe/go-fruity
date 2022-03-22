@@ -1,17 +1,18 @@
 package router
 
 import (
-	"net/http"
-
+	"github.com/UsefulForMe/go-ecommerce/config"
+	"github.com/UsefulForMe/go-ecommerce/handlers"
+	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/UsefulForMe/go-ecommerce/services"
 	"github.com/gin-gonic/gin"
 )
 
-func UserGroup(route *gin.RouterGroup) {
-	route.GET("", func(c *gin.Context) {
-		c.JSON(http.StatusOK,
-			gin.H{
-				"message": "hello from user",
-			},
-		)
-	})
+func UserRouter(route *gin.RouterGroup) {
+
+	h := handlers.NewUserHandler(services.NewUserService(models.NewUserRepository(config.DB)))
+
+	route.GET("", h.GetAll())
+
+	route.POST("", h.Create())
 }

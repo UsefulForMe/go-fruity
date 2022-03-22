@@ -7,8 +7,10 @@ type AppError struct {
 	Code    int
 }
 
-func (e *AppError) Error() string {
-	return e.Message
+func (e *AppError) Error() *AppError {
+	return &AppError{
+		Message: e.Message,
+	}
 }
 
 func NewBadRequestError(message string) *AppError {

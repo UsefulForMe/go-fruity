@@ -1,6 +1,9 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/UsefulForMe/go-ecommerce/logger"
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"gorm.io/driver/postgres"
@@ -10,11 +13,11 @@ import (
 var DB *gorm.DB
 
 func getDatabase() *gorm.DB {
-	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Ho_Chi_Minh"
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Ho_Chi_Minh", Cfg.PostresHost, Cfg.PostresUser, Cfg.PostresPass, Cfg.PostresDB, Cfg.PostresPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logger.Error("Error when connect to database " + err.Error())
-		panic(err)
+		os.Exit(1)
 	}
 	db.AutoMigrate(&models.User{})
 	return db
