@@ -19,7 +19,19 @@ func getDatabase() *gorm.DB {
 		logger.Error("Error when connect to database " + err.Error())
 		os.Exit(1)
 	}
-	db.AutoMigrate(&models.User{})
+
+	if err := db.Exec(`create extension if not exists "uuid-ossp"`).Error; err != nil {
+		logger.Error("Failed to create 'uuid-ossp' extension, but got error " + err.Error())
+	}
+
+	logger.Info("Connect to database successfully")
+	err = db.AutoMigrate(&models.User{}, &models.UserAddress{})
+	if err != nil {
+		logger.Error("Error when auto migrate database " + err.Error())
+		os.Exit(1)
+	}
+	logger.Info("Migrated database")
+
 	return db
 }
 

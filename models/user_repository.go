@@ -3,22 +3,23 @@ package models
 import (
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/logger"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Save(user *User) (*uint, *errs.AppError)
-	FindById(id uint) (*User, *errs.AppError)
+	Save(user *User) (*uuid.UUID, *errs.AppError)
+	FindById(id uuid.UUID) (*User, *errs.AppError)
 	FindAll() ([]User, *errs.AppError)
 	Update(user *User) *errs.AppError
-	Delete(id uint) *errs.AppError
+	Delete(id uuid.UUID) *errs.AppError
 }
 
 type DefaultUserRepository struct {
 	db *gorm.DB
 }
 
-func (d DefaultUserRepository) Save(user *User) (*uint, *errs.AppError) {
+func (d DefaultUserRepository) Save(user *User) (*uuid.UUID, *errs.AppError) {
 	if err := d.db.Create(&user).Error; err != nil {
 		logger.Error("Error when create user " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when create user " + err.Error())
@@ -26,7 +27,7 @@ func (d DefaultUserRepository) Save(user *User) (*uint, *errs.AppError) {
 	return &user.ID, nil
 }
 
-func (d DefaultUserRepository) FindById(id uint) (*User, *errs.AppError) {
+func (d DefaultUserRepository) FindById(id uuid.UUID) (*User, *errs.AppError) {
 	var user User
 	if err := d.db.First(user, id).Error; err != nil {
 		logger.Error("Error when find user by id " + err.Error())
@@ -37,7 +38,7 @@ func (d DefaultUserRepository) FindById(id uint) (*User, *errs.AppError) {
 
 func (d DefaultUserRepository) FindAll() ([]User, *errs.AppError) {
 	var users []User
-	if err := d.db.Find(&users).Error; err != nil {
+	if err := d.db.Model(&users).Preload("Addresses").Find(&users).Error; err != nil {
 		logger.Error("Error when find all users " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find all users " + err.Error())
 	}
@@ -52,7 +53,7 @@ func (d DefaultUserRepository) Update(user *User) *errs.AppError {
 	return nil
 }
 
-func (d DefaultUserRepository) Delete(id uint) *errs.AppError {
+func (d DefaultUserRepository) Delete(id uuid.UUID) *errs.AppError {
 	if err := d.db.Delete(User{}, id).Error; err != nil {
 		logger.Error("Error when delete user " + err.Error())
 		return errs.NewUnexpectedError("Unexpected error when delete user " + err.Error())
