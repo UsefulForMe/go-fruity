@@ -22,9 +22,9 @@ func (h UserHandler) Create() gin.HandlerFunc {
 
 		res, err := h.userService.Create(req)
 		if err != nil {
-			c.JSON(err.Code, err.Error())
+			WriteResponseError(c, err)
 		} else {
-			c.JSON(http.StatusOK, res)
+			WriteResponse(c, http.StatusOK, res)
 		}
 
 	}
@@ -35,9 +35,9 @@ func (h UserHandler) GetAll() gin.HandlerFunc {
 
 		res, err := h.userService.List()
 		if err != nil {
-			c.JSON(err.Code, err.Error())
+			WriteResponseError(c, err)
 		} else {
-			c.JSON(http.StatusOK, res)
+			WriteResponse(c, http.StatusOK, res)
 		}
 
 	}

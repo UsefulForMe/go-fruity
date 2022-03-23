@@ -13,6 +13,5 @@ func UserRouter(route *gin.RouterGroup) {
 	h := handlers.NewUserHandler(services.NewUserService(models.NewUserRepository(config.DB)))
 
 	route.GET("", h.GetAll())
-
 	route.POST("", h.Create())
 }
