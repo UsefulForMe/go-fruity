@@ -4,6 +4,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/google/uuid"
 )
 
 type UserService interface {
@@ -16,10 +17,14 @@ type DefaultUserService struct {
 }
 
 func (s DefaultUserService) Create(r dto.CreateUserRequest) (*dto.CreateUserResponse, *errs.AppError) {
+
+	uuid := uuid.New().String()
+
 	user := models.User{
 		PhoneNumber: r.PhoneNumber,
 		FullName:    r.PhoneNumber,
 		Email:       "",
+		UUID:        uuid,
 	}
 
 	userId, err := s.repo.Save(&user)
