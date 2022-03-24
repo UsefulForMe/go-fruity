@@ -12,7 +12,7 @@ import (
 func NewJWTToken(issuer string, data map[string]string) (*jwt.Token, *string, *errs.AppError) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"iss":  issuer,
-		"exp":  time.Now().Add(time.Second).Unix(),
+		"exp":  time.Now().Add(24 * time.Hour).Unix(),
 		"data": data,
 	})
 

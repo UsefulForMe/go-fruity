@@ -13,7 +13,7 @@ type UserHandler struct {
 	userService services.UserService
 }
 
-func (h UserHandler) Create() gin.HandlerFunc {;
+func (h UserHandler) Create() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.CreateUserRequest
 		if err := c.BindJSON(&req); err != nil {
