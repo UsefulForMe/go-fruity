@@ -10,11 +10,13 @@ type Config struct {
 	Debug string `mapstructure:"DEBUG"`
 	Port  string `mapstructure:"PORT"`
 
-	PostresUser string `mapstructure:"POSTGRES_USER"`
-	PostresPass string `mapstructure:"POSTGRES_PASSWORD"`
-	PostresHost string `mapstructure:"POSTGRES_HOST"`
-	PostresPort string `mapstructure:"POSTGRES_PORT"`
-	PostresDB   string `mapstructure:"POSTGRES_DB"`
+	PostresUser  string `mapstructure:"POSTGRES_USER"`
+	PostresPass  string `mapstructure:"POSTGRES_PASSWORD"`
+	PostresHost  string `mapstructure:"POSTGRES_HOST"`
+	PostresPort  string `mapstructure:"POSTGRES_PORT"`
+	PostresDB    string `mapstructure:"POSTGRES_DB"`
+	JWTSecretKey string `mapstructure:"JWT_SECRET_KEY"`
+	HmacSecret   []byte
 }
 
 var Cfg *Config
@@ -35,4 +37,5 @@ func getConfig() *Config {
 
 func InitConfig() {
 	Cfg = getConfig()
+	Cfg.HmacSecret = []byte(Cfg.JWTSecretKey)
 }

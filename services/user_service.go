@@ -1,14 +1,18 @@
 package services
 
 import (
+	"github.com/UsefulForMe/go-ecommerce/config"
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/golang-jwt/jwt"
 )
 
 type UserService interface {
 	Create(user dto.CreateUserRequest) (*dto.CreateUserResponse, *errs.AppError)
 	List() (*dto.GetAllUserResponse, *errs.AppError)
+
+	Login(user dto.LoginUserRequest) (*dto.LoginUserResponse, *errs.AppError)
 }
 
 type DefaultUserService struct {
@@ -45,6 +49,29 @@ func (s DefaultUserService) List() (*dto.GetAllUserResponse, *errs.AppError) {
 	}
 	return &res, nil
 
+}
+
+func (s DefaultUserService) Login(r dto.LoginUserRequest) (*dto.LoginUserResponse, *errs.AppError) {
+
+	user, err := s.repo.FindByPhoneNumber(r.PhoneNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	jwtToken, token, err := config.NewJWTToken(user.ID.String(), map[string]string{})
+	if err != nil {
+		return nil, err
+	}
+	claims := jwtToken.Claims.(jwt.MapClaims)
+	expiredAt := claims["exp"].(int64)
+
+	res := dto.LoginUserResponse{
+		User:     *user,
+		Token:    *token,
+		ExpireAt: expiredAt,
+	}
+
+	return &res, nil
 }
 
 func NewUserService(repo models.UserRepository) DefaultUserService {

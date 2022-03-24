@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Save(user *User) (*uuid.UUID, *errs.AppError)
 	FindById(id uuid.UUID) (*User, *errs.AppError)
+	FindByPhoneNumber(phoneNumber string) (*User, *errs.AppError)
 	FindAll() ([]User, *errs.AppError)
 	Update(user *User) *errs.AppError
 	Delete(id uuid.UUID) *errs.AppError
@@ -29,7 +30,8 @@ func (d DefaultUserRepository) Save(user *User) (*uuid.UUID, *errs.AppError) {
 
 func (d DefaultUserRepository) FindById(id uuid.UUID) (*User, *errs.AppError) {
 	var user User
-	if err := d.db.First(user, id).Error; err != nil {
+
+	if err := d.db.First(&user, id).Error; err != nil {
 		logger.Error("Error when find user by id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find user by id " + err.Error())
 	}
@@ -46,7 +48,7 @@ func (d DefaultUserRepository) FindAll() ([]User, *errs.AppError) {
 }
 
 func (d DefaultUserRepository) Update(user *User) *errs.AppError {
-	if err := d.db.Save(user).Error; err != nil {
+	if err := d.db.Save(&user).Error; err != nil {
 		logger.Error("Error when update user " + err.Error())
 		return errs.NewUnexpectedError("Unexpected error when update user " + err.Error())
 	}
@@ -59,6 +61,16 @@ func (d DefaultUserRepository) Delete(id uuid.UUID) *errs.AppError {
 		return errs.NewUnexpectedError("Unexpected error when delete user " + err.Error())
 	}
 	return nil
+}
+
+func (d DefaultUserRepository) FindByPhoneNumber(phoneNumber string) (*User, *errs.AppError) {
+	var user User
+	result := d.db.Where("phone_number=?", phoneNumber).First(&user)
+	if err := result.Error; err != nil {
+		logger.Error("Error when find user by phone number " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected error when find user by phone number " + err.Error())
+	}
+	return &user, nil
 }
 
 func NewUserRepository(db *gorm.DB) *DefaultUserRepository {

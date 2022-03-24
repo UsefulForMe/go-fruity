@@ -13,5 +13,5 @@ func WriteResponse(c *gin.Context, code int, data interface{}) {
 
 func WriteResponseError(c *gin.Context, err *errs.AppError) {
 	c.Error(errors.New(err.Message))
-	c.JSON(err.Code, err.Error())
+	c.AbortWithStatusJSON(err.Code, err.Error())
 }
