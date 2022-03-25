@@ -11,7 +11,7 @@ import (
 
 func UserRouter(route *gin.RouterGroup) {
 	r := models.NewUserRepository(config.DB)
-	h := handlers.NewUserHandler(services.NewUserService(r))
+	h := handlers.NewUserHandler(services.NewUserService(r), services.NewFirebaseService())
 
 	route.POST("login", h.Login())
 

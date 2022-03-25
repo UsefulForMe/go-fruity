@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -28,7 +29,8 @@ func VerifyJWTToken(tokenString string) (jwt.MapClaims, *errs.AppError) {
 
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", t.Header["alg"])
+			logger.Error(fmt.Sprintf("Unexpected signing method: %v", t.Header["alg"]))
+			return nil, errors.New("Unexpected signing method")
 		}
 		return Cfg.HmacSecret, nil
 	})

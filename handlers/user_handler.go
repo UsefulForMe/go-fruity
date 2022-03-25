@@ -6,11 +6,13 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/services"
+	"github.com/UsefulForMe/go-ecommerce/utils"
 	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
-	userService services.UserService
+	userService     services.UserService
+	firebaseService services.FirebaseService
 }
 
 func (h UserHandler) Create() gin.HandlerFunc {
@@ -34,6 +36,7 @@ func (h UserHandler) Create() gin.HandlerFunc {
 func (h UserHandler) GetAll() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
+
 		res, err := h.userService.List()
 		if err != nil {
 			WriteResponseError(c, err)
@@ -51,6 +54,21 @@ func (h UserHandler) Login() gin.HandlerFunc {
 			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
 			return
 		}
+
+		req.PhoneNumber = utils.InternationPhoneToNational(req.PhoneNumber)
+
+		token, err := h.firebaseService.VerifyIDToken(req.IdToken)
+		if err != nil {
+			WriteResponseError(c, err)
+			return
+		}
+
+		verifiedPhoneNumber := utils.InternationPhoneToNational(token.Claims["phone_number"].(string))
+		if req.PhoneNumber != verifiedPhoneNumber {
+			WriteResponseError(c, errs.NewUnauthenticatedError("phone number does not match"))
+			return
+		}
+
 		res, err := h.userService.Login(req)
 
 		if err != nil {
@@ -61,8 +79,9 @@ func (h UserHandler) Login() gin.HandlerFunc {
 	}
 }
 
-func NewUserHandler(service services.UserService) UserHandler {
+func NewUserHandler(userService services.UserService, firebaseService services.FirebaseService) UserHandler {
 	return UserHandler{
-		userService: service,
+		userService:     userService,
+		firebaseService: firebaseService,
 	}
 }
