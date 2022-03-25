@@ -1,17 +1,18 @@
 package app
 
 import (
-	middleware "github.com/UsefulForMe/go-ecommerce/middlewares"
+	"github.com/UsefulForMe/go-ecommerce/config"
 	router "github.com/UsefulForMe/go-ecommerce/routers"
 	"github.com/gin-gonic/gin"
 )
 
 func SetupApp() *gin.Engine {
 
-	gin.SetMode(gin.ReleaseMode)
+	config.InitDatabase()
 
-	app := gin.New()
-	app.Use(middleware.Cors(), middleware.RequestLogger(), gin.Recovery())
+	gin.SetMode(gin.ReleaseMode)
+	app := gin.Default()
+	// app.Use(middleware.Cors(), middleware.RequestLogger(), gin.Recovery())
 	router.SetupRoute(app)
 
 	return app
