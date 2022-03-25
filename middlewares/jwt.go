@@ -6,12 +6,12 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/config"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/handlers"
-	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/UsefulForMe/go-ecommerce/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func VerifyJWT(r models.UserRepository) gin.HandlerFunc {
+func VerifyJWT(r repository.UserRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authentiationHeader := c.Request.Header.Get("Authorization")
 

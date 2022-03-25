@@ -5,6 +5,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/UsefulForMe/go-ecommerce/repository"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -16,7 +17,7 @@ type UserService interface {
 }
 
 type DefaultUserService struct {
-	repo models.UserRepository
+	repo repository.UserRepository
 }
 
 func (s DefaultUserService) Create(r dto.CreateUserRequest) (*dto.CreateUserResponse, *errs.AppError) {
@@ -85,7 +86,7 @@ func (s DefaultUserService) Login(r dto.LoginUserRequest) (*dto.LoginUserRespons
 	return &res, nil
 }
 
-func NewUserService(repo models.UserRepository) DefaultUserService {
+func NewUserService(repo repository.UserRepository) DefaultUserService {
 	return DefaultUserService{
 		repo: repo,
 	}
