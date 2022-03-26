@@ -1,10 +1,22 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/UsefulForMe/go-ecommerce/config"
+	middleware "github.com/UsefulForMe/go-ecommerce/middlewares"
+	"github.com/UsefulForMe/go-ecommerce/repository"
+	"github.com/gin-gonic/gin"
+)
 
 func SetupRoute(app *gin.Engine) {
-	route := app.Group("/v1")
+	jwtMiddleware := middleware.NewJWTMiddleware(repository.NewUserRepository(config.DB))
+	v1 := app.Group("/v1")
 
-	UserRouter(route)
+	AuthRouter(v1)
+
+	v1.Use(jwtMiddleware.Verify())
+	{
+		UserRouter(v1.Group("/users"))
+		UploadRouter(v1.Group("/upload"))
+	}
 
 }

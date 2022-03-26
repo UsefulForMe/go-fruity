@@ -17,6 +17,12 @@ type Config struct {
 	PostresDB    string `mapstructure:"POSTGRES_DB"`
 	JWTSecretKey string `mapstructure:"JWT_SECRET_KEY"`
 	HmacSecret   []byte
+
+	AWSRegion     string `mapstructure:"AWS_REGION"`
+	AWSID         string `mapstructure:"AWS_ACCESS_KEY_ID"`
+	AWSSecret     string `mapstructure:"AWS_SECRET_ACCESS_KEY"`
+	AWSBucket     string `mapstructure:"AWS_BUCKET"`
+	AWSS3Endpoint string `mapstructure:"AWS_S3_ENDPOINT"`
 }
 
 var Cfg *Config
