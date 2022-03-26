@@ -8,11 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRouter(userRouer *gin.RouterGroup) {
-	r := repository.NewUserRepository(config.DB)
-	h := handlers.NewUserHandler(services.NewUserService(r), services.NewFirebaseService())
+func AuthRouter(route *gin.RouterGroup) {
 
-	userRouer.GET("", h.GetAll())
-	userRouer.POST("", h.Create())
+	h := handlers.NewUserHandler(services.NewUserService(repository.NewUserRepository(config.DB)), services.NewFirebaseService())
+
+	route.POST("login", h.Login())
 
 }

@@ -11,7 +11,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func VerifyJWT(r repository.UserRepository) gin.HandlerFunc {
+type JWTMiddleware struct {
+	repo repository.UserRepository
+}
+
+func (m JWTMiddleware) Verify() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authentiationHeader := c.Request.Header.Get("Authorization")
 
@@ -36,12 +40,18 @@ func VerifyJWT(r repository.UserRepository) gin.HandlerFunc {
 
 		userUUID := uuid.Must(uuid.Parse(userId))
 
-		user, err := r.FindById(userUUID)
+		user, err := m.repo.FindById(userUUID)
 		if err != nil {
 			handlers.WriteResponseError(c, err)
 			return
 		}
 		c.Set("user", *user)
 		c.Next()
+	}
+}
+
+func NewJWTMiddleware(repo repository.UserRepository) JWTMiddleware {
+	return JWTMiddleware{
+		repo: repo,
 	}
 }
