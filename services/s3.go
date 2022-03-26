@@ -81,7 +81,7 @@ func (s S3Service) UploadFiles(r dto.UploadFilesRequest) (*dto.UploadFilesRespon
 	return &res, nil
 }
 
-func (s S3Service) DeleteFile(r dto.DeleteFileRequest) *errs.AppError {
+func (s S3Service) DeleteFile(r dto.DeleteFileRequest) (*dto.DeleteFileResponse, *errs.AppError) {
 	splitLink := strings.Split(r.Link, "/")
 	key := splitLink[len(splitLink)-1]
 	_, err := s.S3Client.DeleteObject(&s3.DeleteObjectInput{
@@ -89,12 +89,14 @@ func (s S3Service) DeleteFile(r dto.DeleteFileRequest) *errs.AppError {
 		Key:    aws.String(key),
 	})
 	if err != nil {
-		return errs.NewUnexpectedError("Error when delete file " + err.Error())
+		return nil, errs.NewUnexpectedError("Error when delete file " + err.Error())
 	}
-	return nil
+	return &dto.DeleteFileResponse{
+		Message: "Delete file success",
+	}, nil
 }
 
-func (s S3Service) DeleteFiles(r dto.DeleteFilesRequest) *errs.AppError {
+func (s S3Service) DeleteFiles(r dto.DeleteFilesRequest) (*dto.DeleteFilesResponse, *errs.AppError) {
 
 	keys := make([]*s3.ObjectIdentifier, 0)
 	for _, link := range r.Links {
@@ -112,9 +114,11 @@ func (s S3Service) DeleteFiles(r dto.DeleteFilesRequest) *errs.AppError {
 		},
 	})
 	if err != nil {
-		return errs.NewUnexpectedError("Error when delete files " + err.Error())
+		return nil, errs.NewUnexpectedError("Error when delete files " + err.Error())
 	}
-	return nil
+	return &dto.DeleteFilesResponse{
+		Message: "Delete files success",
+	}, nil
 }
 
 func NewS3Service() S3Service {
