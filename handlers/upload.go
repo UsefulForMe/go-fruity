@@ -58,14 +58,12 @@ func (h *UploadHandler) Delete() gin.HandlerFunc {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind body "+err.Error()))
 			return
 		}
-		appErr := h.s3.DeleteFile(req)
+		res, appErr := h.s3.DeleteFile(req)
 		if appErr != nil {
 			WriteResponseError(c, appErr)
 			return
 		}
-		WriteResponse(c, http.StatusOK, gin.H{
-			"message": "ok",
-		})
+		WriteResponse(c, http.StatusOK, res)
 	}
 }
 
@@ -77,14 +75,12 @@ func (h *UploadHandler) DeleteMany() gin.HandlerFunc {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind body "+err.Error()))
 			return
 		}
-		appErr := h.s3.DeleteFiles(req)
+		res, appErr := h.s3.DeleteFiles(req)
 		if appErr != nil {
 			WriteResponseError(c, appErr)
 			return
 		}
-		WriteResponse(c, http.StatusOK, gin.H{
-			"message": "ok",
-		})
+		WriteResponse(c, http.StatusOK, res)
 	}
 }
 
