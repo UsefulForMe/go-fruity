@@ -38,6 +38,8 @@ func getConfig() *Config {
 	if err != nil {
 		logger.Error("Error when map config file " + err.Error())
 	}
+
+	logger.Info("Config loaded")
 	return conf
 }
 

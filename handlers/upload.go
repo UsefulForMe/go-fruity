@@ -5,6 +5,7 @@ import (
 
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
+	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/UsefulForMe/go-ecommerce/services"
 	"github.com/gin-gonic/gin"
 )
@@ -21,7 +22,10 @@ func (h *UploadHandler) Upload() gin.HandlerFunc {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind file "+err.Error()))
 			return
 		}
-		result, appError := h.s3.UploadFile(form)
+		user := c.MustGet("user").(models.User)
+
+		result, appError := h.s3.UploadFile(form, user.ID)
+
 		if appError != nil {
 			WriteResponseError(c, appError)
 		} else {
@@ -39,8 +43,8 @@ func (h *UploadHandler) UploadMany() gin.HandlerFunc {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind file "+err.Error()))
 			return
 		}
-
-		result, appError := h.s3.UploadFiles(form)
+		user := c.MustGet("user").(models.User)
+		result, appError := h.s3.UploadFiles(form, user.ID)
 		if appError != nil {
 			WriteResponseError(c, appError)
 		} else {

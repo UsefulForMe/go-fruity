@@ -14,5 +14,5 @@ func main() {
 
 	port := config.Cfg.Port
 	logger.Info("App is running on port " + port)
-	r.Run(fmt.Sprintf(":%s", port))
+	logger.Error(r.Run(fmt.Sprintf(":%s", port)).Error())
 }

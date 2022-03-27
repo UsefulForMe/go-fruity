@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/UsefulForMe/go-ecommerce/config"
+	"github.com/UsefulForMe/go-ecommerce/logger"
 	middleware "github.com/UsefulForMe/go-ecommerce/middlewares"
 	"github.com/UsefulForMe/go-ecommerce/repository"
 	"github.com/gin-gonic/gin"
@@ -18,5 +19,5 @@ func SetupRoute(app *gin.Engine) {
 		UserRouter(v1.Group("/users"))
 		UploadRouter(v1.Group("/upload"))
 	}
-
+	logger.Info("Router setup successfully")
 }
