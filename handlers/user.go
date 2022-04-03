@@ -17,6 +17,7 @@ type UserHandler struct {
 
 func (h UserHandler) Create() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		var req dto.CreateUserRequest
 		if err := c.BindJSON(&req); err != nil {
 			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
@@ -50,7 +51,8 @@ func (h UserHandler) GetAll() gin.HandlerFunc {
 func (h UserHandler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.LoginUserRequest
-		if err := c.BindJSON(&req); err != nil {
+
+		if err := c.ShouldBindJSON(&req); err != nil {
 			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
 			return
 		}
