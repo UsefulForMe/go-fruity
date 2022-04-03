@@ -13,6 +13,8 @@ func SetupRoute(app *gin.Engine) {
 
 	AuthRouter(v1)
 
+	CategoryRoute(v1.Group("/categories"))
+
 	v1.Use(jwtMiddleware.Verify())
 	{
 		UserRouter(v1.Group("/users"))

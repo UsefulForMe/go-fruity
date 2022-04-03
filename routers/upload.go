@@ -9,12 +9,9 @@ import (
 func UploadRouter(route *gin.RouterGroup) {
 
 	h := handlers.NewUploadHandler(services.NewS3Service())
-
-	uploadRouter := route.Group("/upload")
-	
-	uploadRouter.POST("/file", h.Upload())
-	uploadRouter.POST("/files", h.UploadMany())
-	uploadRouter.PUT("/file/delete", h.Delete())
-	uploadRouter.PUT("/files/delete", h.DeleteMany())
+	route.POST("/file", h.Upload())
+	route.POST("/files", h.UploadMany())
+	route.PUT("/file/delete", h.Delete())
+	route.PUT("/files/delete", h.DeleteMany())
 
 }
