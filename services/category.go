@@ -9,11 +9,13 @@ import (
 )
 
 type CategoryService interface {
-	GetAllCategories() (*dto.CategoryListResponse, *errs.AppError)
-	GetAllParentCategories() (*dto.CategoryListResponse, *errs.AppError)
-	GetAllChildCategories(parentID uuid.UUID) (*dto.CategoryListResponse, *errs.AppError)
+	GetAllCategories() (*dto.ListCategoryResponse, *errs.AppError)
+	GetAllParentCategories() (*dto.ListCategoryResponse, *errs.AppError)
+	GetAllChildCategories(dto.ListCategoryRequest) (*dto.ListCategoryResponse, *errs.AppError)
 
 	CreateCategory(req dto.CreateCategoryRequest) (*dto.CreateCategoryResponse, *errs.AppError)
+
+	GetProductsByCategory(dto.GetProductsByCategoryRequest) (*dto.GetProductsByCategoryResponse, *errs.AppError)
 }
 
 type DefaultCategoryService struct {
@@ -26,17 +28,17 @@ func NewCategoryService(repo repository.CategoryRepository) CategoryService {
 	}
 }
 
-func (s DefaultCategoryService) GetAllCategories() (*dto.CategoryListResponse, *errs.AppError) {
+func (s DefaultCategoryService) GetAllCategories() (*dto.ListCategoryResponse, *errs.AppError) {
 	categories, err := s.repo.List()
 	if err != nil {
 		return nil, err
 	}
-	return &dto.CategoryListResponse{
+	return &dto.ListCategoryResponse{
 		Categories: categories,
 	}, nil
 }
 
-func (s DefaultCategoryService) GetAllParentCategories() (*dto.CategoryListResponse, *errs.AppError) {
+func (s DefaultCategoryService) GetAllParentCategories() (*dto.ListCategoryResponse, *errs.AppError) {
 	categories, err := s.repo.List()
 	if err != nil {
 		return nil, err
@@ -47,23 +49,23 @@ func (s DefaultCategoryService) GetAllParentCategories() (*dto.CategoryListRespo
 			parentCategories = append(parentCategories, category)
 		}
 	}
-	return &dto.CategoryListResponse{
+	return &dto.ListCategoryResponse{
 		Categories: parentCategories,
 	}, nil
 }
 
-func (s DefaultCategoryService) GetAllChildCategories(parentID uuid.UUID) (*dto.CategoryListResponse, *errs.AppError) {
+func (s DefaultCategoryService) GetAllChildCategories(req dto.ListCategoryRequest) (*dto.ListCategoryResponse, *errs.AppError) {
 	categories, err := s.repo.List()
 	if err != nil {
 		return nil, err
 	}
 	var childCategories []models.Category
 	for _, category := range categories {
-		if category.ParentID != nil && *category.ParentID == parentID {
+		if category.ParentID != nil && *category.ParentID == *req.ParentID {
 			childCategories = append(childCategories, category)
 		}
 	}
-	return &dto.CategoryListResponse{
+	return &dto.ListCategoryResponse{
 		Categories: childCategories,
 	}, nil
 }
@@ -87,4 +89,13 @@ func (s DefaultCategoryService) CreateCategory(req dto.CreateCategoryRequest) (*
 	return &dto.CreateCategoryResponse{
 		Category: *createdCategory,
 	}, nil
+}
+
+func (s DefaultCategoryService) GetProductsByCategory(req dto.GetProductsByCategoryRequest) (*dto.GetProductsByCategoryResponse, *errs.AppError) {
+	products, err := s.repo.ListProducts(req.CategoryID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.GetProductsByCategoryResponse{Products: products}, nil
+
 }

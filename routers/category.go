@@ -14,4 +14,6 @@ func CategoryRoute(route *gin.RouterGroup) {
 
 	route.GET("", h.GetAllCategories()).POST("", h.CreateCategory())
 
+	route.GET("/:id/products", h.GetProductsByCategoryID())
+
 }

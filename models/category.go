@@ -8,4 +8,5 @@ type Category struct {
 	ImageURL string     `json:"image_url"`
 	Parent   *Category  `json:"parent,omitempty"`
 	ParentID *uuid.UUID `json:"parent_id,omitempty"`
+	Products []Product  `json:"products,omitempty" gorm:"foreignKey:CategoryID" `
 }

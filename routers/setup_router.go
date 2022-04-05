@@ -14,6 +14,7 @@ func SetupRoute(app *gin.Engine) {
 	AuthRouter(v1)
 
 	CategoryRoute(v1.Group("/categories"))
+	ProductRoute(v1.Group("/products"))
 
 	v1.Use(jwtMiddleware.Verify())
 	{

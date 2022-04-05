@@ -1,13 +1,15 @@
 package dto
 
-import "github.com/UsefulForMe/go-ecommerce/models"
+import (
+	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/google/uuid"
+)
 
-type CategoryListResponse struct {
+type ListCategoryResponse struct {
 	Categories []models.Category `json:"categories"`
 }
-
-type CategoryListRequest struct {
-	ParentID *string `json:"parent_id"`
+type ListCategoryRequest struct {
+	ParentID *uuid.UUID `json:"parent_id"`
 }
 
 //---------------------------------------------
@@ -18,4 +20,14 @@ type CreateCategoryRequest struct {
 }
 type CreateCategoryResponse struct {
 	Category models.Category `json:"category"`
+}
+
+//---------------------------------------------
+
+type GetProductsByCategoryRequest struct {
+	CategoryID uuid.UUID `json:"category_id"`
+}
+
+type GetProductsByCategoryResponse struct {
+	Products []models.Product `json:"products"`
 }
