@@ -12,11 +12,11 @@ type Product struct {
 	Description string         `json:"description"`
 	Name        string         `json:"name"`
 	Price       float64        `json:"price"`
-	CategoryID  *uuid.UUID     `json:"category_id"`
 	OldPrice    *float64       `json:"old_price"`
+	CategoryID  *uuid.UUID     `json:"category_id"`
 	Unit        *string        `json:"unit"`
-	Tags        pq.StringArray `json:"tags" gorm:"type:varchar(100)[]"`
+	Tags        pq.StringArray `json:"tags" gorm:"type:varchar(100)[],default:[]"`
 	Instruction *string        `json:"instruction"`
 	Origin      *string        `json:"origin"`
-	Packs       pq.StringArray `json:"packs,omitempty" gorm:"type:varchar(100)[]"`
+	Packs       pq.StringArray `json:"packs,omitempty" gorm:"type:varchar(100)[], default: []"`
 }
