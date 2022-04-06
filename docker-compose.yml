@@ -1,4 +1,4 @@
-version: '3.5'
+version: "3.5"
 
 services:
   postgres:
@@ -14,8 +14,8 @@ services:
       - "5432:5432"
     restart: always
     networks:
-      - default
-  
+      - fruity-network
+
   go-ecommerce:
     container_name: fruity-go
     build: ./
@@ -23,13 +23,13 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - default
+      - fruity-network
     depends_on:
       - postgres
     restart: always
 
-
-
-
 volumes:
   fruity_data:
+
+networks:
+  fruity-network:

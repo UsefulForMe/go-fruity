@@ -14,6 +14,7 @@ RUN go mod download
 COPY . .
 RUN go build -o ./build/app
 COPY .env ./build
+COPY serviceAccountKey.json ./build
 FROM alpine:latest
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
