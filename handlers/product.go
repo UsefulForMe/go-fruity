@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
@@ -61,5 +62,22 @@ func (h ProductHandler) GetProductByID() gin.HandlerFunc {
 			return
 		}
 		WriteResponse(c, http.StatusOK, product)
+	}
+}
+func (h ProductHandler) GetTopSaleProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var request dto.GetTopSaleProductsRequest
+		limit, errLim := strconv.Atoi(c.DefaultQuery("limit", "10"))
+		if errLim != nil {
+			WriteResponseError(c, errs.NewBadRequestError(errLim.Error()))
+			return
+		}
+		request.Limit = limit
+		products, err := h.productService.GetTopSaleProducts(request)
+		if err != nil {
+			WriteResponseError(c, err)
+			return
+		}
+		WriteResponse(c, http.StatusOK, products)
 	}
 }
