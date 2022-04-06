@@ -60,7 +60,7 @@ func (r DefaultProductRepository) FindByID(id uuid.UUID) (*models.Product, *errs
 func (r DefaultProductRepository) FindTopSales(limit int) ([]models.Product, *errs.AppError) {
 	var products []models.Product
 
-	if err := r.db.Select("(((old_price -price) /old_price) *100) as percent, *").Where("old_price <> null or old_price >0").Limit(limit).Find(&products).Error; err != nil {
+	if err := r.db.Select("*, (1-(price/old_price))*100 as percent").Where("old_price>0 or old_price <> null").Order("(1-(price/old_price))*100 desc").Limit(limit).Find(&products).Error; err != nil {
 		logger.Error("Error when find top sales " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find top sales " + err.Error())
 	}

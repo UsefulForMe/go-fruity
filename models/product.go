@@ -15,10 +15,9 @@ type Product struct {
 	OldPrice    *float64       `json:"old_price"`
 	CategoryID  *uuid.UUID     `json:"category_id"`
 	Unit        *string        `json:"unit"`
-	Tags        pq.StringArray `json:"tags" gorm:"type:varchar(100)[]"`
+	Tags        pq.StringArray `json:"tags" gorm:"type:varchar(100)[]" sql:"default: '{}'"`
 	Instruction *string        `json:"instruction"`
 	Origin      *string        `json:"origin"`
-	Packs       pq.StringArray `json:"packs,omitempty" gorm:"type:varchar(100)[]"`
-	Percent     *float32       `json:"percent"`
-	TotalSold   float32        `json:"totalSold"`
+	Packs       pq.StringArray `json:"packs,omitempty" gorm:"type:varchar(100)[]" sql:"default: '{}'"`
+	Percent     *float64       `json:"percent,omitempty" gorm:"<-:false;->;-:migration"`
 }
