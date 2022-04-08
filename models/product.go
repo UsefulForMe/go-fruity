@@ -19,4 +19,5 @@ type Product struct {
 	Instruction *string        `json:"instruction"`
 	Origin      *string        `json:"origin"`
 	Packs       pq.StringArray `json:"packs,omitempty" gorm:"type:varchar(100)[]" sql:"default: '{}'"`
+	Percent     *float64       `json:"percent,omitempty" gorm:"<-:false;->;-:migration"`
 }

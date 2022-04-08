@@ -36,3 +36,9 @@ type GetProductRequest struct {
 type GetProductResponse struct {
 	Product models.Product `json:"product"`
 }
+type GetTopSaleProductsRequest struct {
+	Limit int `json:"limit"`
+}
+type GetTopSaleProductsRespone struct {
+	Products []models.Product `json:"products"`
+}

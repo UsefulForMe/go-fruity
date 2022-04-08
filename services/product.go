@@ -9,7 +9,7 @@ import (
 
 type ProductService interface {
 	CreateProduct(request *dto.CreateProductRequest) (*dto.CreateProductResponse, *errs.AppError)
-
+	GetTopSaleProducts(request dto.GetTopSaleProductsRequest) (*dto.GetTopSaleProductsRespone, *errs.AppError)
 	GetProducts(req dto.GetProductsRequest) (*dto.GetProductsResponse, *errs.AppError)
 	GetProduct(dto.GetProductRequest) (*dto.GetProductResponse, *errs.AppError)
 }
@@ -62,4 +62,11 @@ func (s DefaultProductService) GetProduct(req dto.GetProductRequest) (*dto.GetPr
 	}
 
 	return &dto.GetProductResponse{Product: *product}, nil
+}
+func (s DefaultProductService) GetTopSaleProducts(request dto.GetTopSaleProductsRequest) (*dto.GetTopSaleProductsRespone, *errs.AppError) {
+	products, err := s.productRepository.FindTopSales(request.Limit)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.GetTopSaleProductsRespone{Products: products}, nil
 }
