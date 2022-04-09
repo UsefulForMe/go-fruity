@@ -44,7 +44,7 @@ func (r DefaultCatoryRepository) Create(category *models.Category) (*models.Cate
 
 func (r DefaultCatoryRepository) ListProducts(id uuid.UUID) ([]models.Product, *errs.AppError) {
 	var products []models.Product
-	if err := r.db.Model(&products).Where("category_id = ?", id).Find(&products).Error; err != nil {
+	if err := r.db.Model(&products).Where("category_id = ?", id).Preload("Seller").Find(&products).Error; err != nil {
 		logger.Error("Error when find all products " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find all products " + err.Error())
 	}
