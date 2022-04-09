@@ -30,6 +30,7 @@ func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) 
 		Description: request.Description,
 		Price:       request.Price,
 		CategoryID:  request.CategoryID,
+		SellerID:    request.SellerID,
 		OldPrice:    request.OldPrice,
 		Unit:        request.Unit,
 		Tags:        request.Tags,

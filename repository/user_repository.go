@@ -9,7 +9,7 @@ import (
 )
 
 type UserRepository interface {
-	Save(user *models.User) (*uuid.UUID, *errs.AppError)
+	Save(user models.User) (*models.User, *errs.AppError)
 	FindById(id uuid.UUID) (*models.User, *errs.AppError)
 	FindByPhoneNumber(phoneNumber string) (*models.User, *errs.AppError)
 	FindAll() ([]models.User, *errs.AppError)
@@ -21,12 +21,12 @@ type DefaultUserRepository struct {
 	db *gorm.DB
 }
 
-func (d DefaultUserRepository) Save(user *models.User) (*uuid.UUID, *errs.AppError) {
+func (d DefaultUserRepository) Save(user models.User) (*models.User, *errs.AppError) {
 	if err := d.db.Create(&user).Error; err != nil {
 		logger.Error("Error when create user " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when create user " + err.Error())
 	}
-	return &user.ID, nil
+	return &user, nil
 }
 
 func (d DefaultUserRepository) FindById(id uuid.UUID) (*models.User, *errs.AppError) {

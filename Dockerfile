@@ -11,7 +11,7 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 RUN go build -o ./build/app
-COPY .env ./build
+COPY .env.production ./build/.env
 COPY serviceAccountKey.json ./build
 
 # Run
