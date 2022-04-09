@@ -2,7 +2,6 @@ package dto
 
 import (
 	"github.com/UsefulForMe/go-ecommerce/models"
-	"github.com/google/uuid"
 )
 
 type GetAllUserResponse struct {
@@ -10,7 +9,7 @@ type GetAllUserResponse struct {
 }
 
 type CreateUserResponse struct {
-	ID uuid.UUID `json:"id"`
+	User models.User `json:"user"`
 }
 
 type CreateUserRequest struct {

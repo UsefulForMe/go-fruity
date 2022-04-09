@@ -28,12 +28,12 @@ func (s DefaultUserService) Create(r dto.CreateUserRequest) (*dto.CreateUserResp
 		Email:       "",
 	}
 
-	userId, err := s.repo.Save(&user)
+	newUser, err := s.repo.Save(user)
 	if err != nil {
 		return nil, err
 	}
 	res := dto.CreateUserResponse{
-		ID: *userId,
+		User: *newUser,
 	}
 	return &res, nil
 
@@ -57,17 +57,16 @@ func (s DefaultUserService) Login(r dto.LoginUserRequest) (*dto.LoginUserRespons
 	user, _ := s.repo.FindByPhoneNumber(r.PhoneNumber)
 
 	if user == nil {
-		newUser := models.User{
+		_user := models.User{
 			PhoneNumber: r.PhoneNumber,
 			FullName:    r.PhoneNumber,
 		}
 
-		id, err := s.repo.Save(&newUser)
+		newUser, err := s.repo.Save(_user)
 		if err != nil {
 			return nil, err
 		}
-		newUser.ID = *id
-		user = &newUser
+		user = newUser
 	}
 
 	jwtToken, token, err := config.NewJWTToken(user.ID.String(), map[string]string{})

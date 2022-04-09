@@ -10,9 +10,10 @@ type CreateProductRequest struct {
 	ImageURLS   []string   `json:"image_urls"`
 	Description string     `json:"description"`
 	Name        string     `json:"name"`
-	Price       float64    `json:"price"`
+	Price       float32    `json:"price"`
 	CategoryID  *uuid.UUID `json:"category_id"`
-	OldPrice    *float64   `json:"old_price"`
+	SellerID    *uuid.UUID `json:"seller_id"`
+	OldPrice    *float32   `json:"old_price"`
 	Unit        *string    `json:"unit"`
 	Tags        []string   `json:"tags"`
 	Instruction *string    `json:"instruction"`

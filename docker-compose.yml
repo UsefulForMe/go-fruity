@@ -19,7 +19,7 @@ services:
   go-ecommerce:
     container_name: fruity-go
     build: ./
-    env_file: .env
+    env_file: .env.production
     ports:
       - "3000:3000"
     networks:
