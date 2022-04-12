@@ -22,10 +22,26 @@ type DefaultUserRepository struct {
 }
 
 func (d DefaultUserRepository) Save(user models.User) (*models.User, *errs.AppError) {
-	if err := d.db.Create(&user).Error; err != nil {
+	tx := d.db.Begin()
+	if err := tx.Create(&user).Error; err != nil {
 		logger.Error("Error when create user " + err.Error())
+		tx.Rollback()
 		return nil, errs.NewUnexpectedError("Unexpected error when create user " + err.Error())
 	}
+
+	payment := models.Payment{
+		Name:     "Tiền mặt",
+		UserID:   user.ID,
+		Logo:     "https://i.imgur.com/exPW606.png",
+		Provider: "cash",
+	}
+	if err := tx.Create(&payment).Error; err != nil {
+		logger.Error("Error when create payment " + err.Error())
+		tx.Rollback()
+		return nil, errs.NewUnexpectedError("Unexpected error when create payment " + err.Error())
+	}
+
+	tx.Commit()
 	return &user, nil
 }
 
