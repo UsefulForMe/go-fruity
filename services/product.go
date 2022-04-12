@@ -10,6 +10,7 @@ import (
 type ProductService interface {
 	CreateProduct(request *dto.CreateProductRequest) (*dto.CreateProductResponse, *errs.AppError)
 	GetTopSaleProducts(request dto.GetTopSaleProductsRequest) (*dto.GetTopSaleProductsRespone, *errs.AppError)
+	GetSaleOffProducts(request dto.GetProductsSaleOffRequest) (*dto.GetProductsSaleOffResponse, *errs.AppError)
 	GetProducts(req dto.GetProductsRequest) (*dto.GetProductsResponse, *errs.AppError)
 	GetProduct(dto.GetProductRequest) (*dto.GetProductResponse, *errs.AppError)
 }
@@ -69,4 +70,11 @@ func (s DefaultProductService) GetTopSaleProducts(request dto.GetTopSaleProducts
 		return nil, err
 	}
 	return &dto.GetTopSaleProductsRespone{Products: products}, nil
+}
+func (s DefaultProductService) GetSaleOffProducts(req dto.GetProductsSaleOffRequest) (*dto.GetProductsSaleOffResponse, *errs.AppError) {
+	products, err := s.productRepository.FindSaleOff(req.Limit)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.GetProductsSaleOffResponse{Products: products}, nil
 }

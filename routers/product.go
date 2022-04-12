@@ -12,5 +12,6 @@ func ProductRoute(route *gin.RouterGroup) {
 	h := handlers.NewProductHandler(services.NewProductService(repository.NewProductRepository(config.DB)))
 	route.GET("", h.GetProductAll()).POST("", h.CreateProduct())
 	route.GET("/get-top-sale", h.GetTopSaleProduct())
+	route.GET("/get-sale-off", h.GetProductsSaleOff())
 	route.GET("/:id", h.GetProductByID())
 }
