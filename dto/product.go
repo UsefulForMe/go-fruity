@@ -50,3 +50,9 @@ type GetProductsSaleOffRequest struct {
 type GetProductsSaleOffResponse struct {
 	Products []models.Product `json:"products"`
 }
+type GetProductsSaleShockRequest struct {
+	Limit int `json:"limit"`
+}
+type GetProductsSaleShockResponse struct {
+	Products []models.Product `json:"products"`
+}

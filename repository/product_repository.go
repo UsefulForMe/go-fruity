@@ -14,6 +14,7 @@ type ProductRepository interface {
 	FindByID(id uuid.UUID) (*models.Product, *errs.AppError)
 	FindTopSales(limit int) ([]models.Product, *errs.AppError)
 	FindSaleOff(limit int) ([]models.Product, *errs.AppError)
+	FindSaleShock(limit int) ([]models.Product, *errs.AppError)
 }
 
 type DefaultProductRepository struct {
@@ -61,7 +62,7 @@ func (r DefaultProductRepository) FindByID(id uuid.UUID) (*models.Product, *errs
 func (r DefaultProductRepository) FindTopSales(limit int) ([]models.Product, *errs.AppError) {
 	var products []models.Product
 
-	if err := r.db.Select("*, (1-(price/old_price))*100 as percent").Where("old_price>0 or old_price <> null").Preload("Seller").Order("(1-(price/old_price))*100 desc").Limit(limit).Find(&products).Error; err != nil {
+	if err := r.db.Select("*, (1-(price/old_price))*100 as percent").Where("old_price>0 or old_price <> null").Preload("Seller").Limit(limit).Find(&products).Error; err != nil {
 		logger.Error("Error when find top sales " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find top sales " + err.Error())
 	}
@@ -70,9 +71,18 @@ func (r DefaultProductRepository) FindTopSales(limit int) ([]models.Product, *er
 func (r DefaultProductRepository) FindSaleOff(limit int) ([]models.Product, *errs.AppError) {
 	var products []models.Product
 
-	if err := r.db.Select("*, (1-(price/old_price))*100 as percent").Where("old_price>0 or old_price <> null and (1-(price/old_price))*100 > 50").Limit(limit).Find(&products).Error; err != nil {
-		logger.Error("Error when find top sales " + err.Error())
+	if err := r.db.Select("*, (1-(price/old_price))*100 as percent").Where("old_price>0 or old_price <> null and (1-(price/old_price))*100 > 50 and (1-(price/old_price))*100 > 80").Preload("Seller").Limit(limit).Find(&products).Error; err != nil {
+		logger.Error("Error when find sale offs " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find sale offs" + err.Error())
+	}
+	return products, nil
+}
+func (r DefaultProductRepository) FindSaleShock(limit int) ([]models.Product, *errs.AppError) {
+	var products []models.Product
+
+	if err := r.db.Select("*, (1-(price/old_price))*100 as percent").Where("old_price>0 or old_price <> null and (1-(price/old_price))*100 > 80").Preload("Seller").Limit(limit).Find(&products).Error; err != nil {
+		logger.Error("Error when find sales shock " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected error when find sale shock" + err.Error())
 	}
 	return products, nil
 }

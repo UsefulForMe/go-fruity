@@ -98,3 +98,20 @@ func (h ProductHandler) GetProductsSaleOff() gin.HandlerFunc {
 		WriteResponse(c, http.StatusOK, products)
 	}
 }
+func (h ProductHandler) GetProductSaleShock() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.GetProductsSaleShockRequest
+		limit, errLim := strconv.Atoi(c.DefaultQuery("limit", "10"))
+		if errLim != nil {
+			WriteResponseError(c, errs.NewBadRequestError(errLim.Error()))
+			return
+		}
+		req.Limit = limit
+		products, err := h.productService.GetSaleShockProducts(req)
+		if err != nil {
+			WriteResponseError(c, err)
+			return
+		}
+		WriteResponse(c, http.StatusOK, products)
+	}
+}

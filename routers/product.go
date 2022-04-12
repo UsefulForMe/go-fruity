@@ -13,5 +13,6 @@ func ProductRoute(route *gin.RouterGroup) {
 	route.GET("", h.GetProductAll()).POST("", h.CreateProduct())
 	route.GET("/get-top-sale", h.GetTopSaleProduct())
 	route.GET("/get-sale-off", h.GetProductsSaleOff())
+	route.GET("/get-sale-shock", h.GetProductSaleShock())
 	route.GET("/:id", h.GetProductByID())
 }
