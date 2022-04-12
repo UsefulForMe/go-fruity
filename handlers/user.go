@@ -76,6 +76,7 @@ func (h UserHandler) Login() gin.HandlerFunc {
 		if err != nil {
 			WriteResponseError(c, err)
 		} else {
+			print(res.Token)
 			WriteResponse(c, http.StatusOK, res)
 		}
 	}

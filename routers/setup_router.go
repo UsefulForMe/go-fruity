@@ -27,6 +27,8 @@ func SetupRoute(app *gin.Engine) {
 	{
 		UserRouter(v1.Group("/users"))
 		UploadRouter(v1.Group("/upload"))
+		PaymentRoute(v1.Group("/payments"))
+		OrderRoute(v1.Group("/orders"))
 	}
 
 }
