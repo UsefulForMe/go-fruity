@@ -19,6 +19,7 @@ type Order struct {
 	PaymentID  uuid.UUID   `json:"payment_id"`
 	Payment    Payment     `json:"payment"`
 	Tracks     []Track     `json:"tracks" gorm:"foreignKey:OrderID"`
+	ReceivedAt time.Time   `json:"received_at"`
 	TotalPrice float32     `json:"total_price,omitempty"  gorm:"<-:false;->;-:migration" `
 }
 

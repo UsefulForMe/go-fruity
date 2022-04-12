@@ -28,6 +28,7 @@ func (s DefaultOrderService) CreateOrder(req dto.CreateOrderRequest) (*dto.Creat
 		SellerID:   req.SellerID,
 		PaymentID:  req.PaymentID,
 		OrderItems: req.OrderItems,
+		ReceivedAt: req.ReceivedAt,
 	}
 	newOrder, err := s.orderRepo.Save(order)
 	if err != nil {
