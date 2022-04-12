@@ -11,13 +11,15 @@ type Product struct {
 	ImageURLS   pq.StringArray `json:"image_urls" gorm:"type:varchar(100)[]"`
 	Description string         `json:"description"`
 	Name        string         `json:"name"`
-	Price       float64        `json:"price"`
-	OldPrice    *float64       `json:"old_price"`
+	Price       float32        `json:"price" gorm:"type:numeric"`
+	OldPrice    *float32       `json:"old_price"  gorm:"type:numeric"`
 	CategoryID  *uuid.UUID     `json:"category_id"`
 	Unit        *string        `json:"unit"`
 	Tags        pq.StringArray `json:"tags" gorm:"type:varchar(100)[]" sql:"default: '{}'"`
 	Instruction *string        `json:"instruction"`
 	Origin      *string        `json:"origin"`
 	Packs       pq.StringArray `json:"packs,omitempty" gorm:"type:varchar(100)[]" sql:"default: '{}'"`
-	Percent     *float64       `json:"percent,omitempty" gorm:"<-:false;->;-:migration"`
+	Percent     *float32       `json:"percent,omitempty" gorm:"<-:false;->;-:migration "`
+	SellerID    *uuid.UUID     `json:"seller_id"`
+	Seller      *Seller        `json:"seller"`
 }
