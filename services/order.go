@@ -24,11 +24,13 @@ func NewOrderService(orderRepo repository.OrderRepository) DefaultOrderService {
 
 func (s DefaultOrderService) CreateOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, *errs.AppError) {
 	order := models.Order{
-		UserID:     req.UserID,
-		SellerID:   req.SellerID,
-		PaymentID:  req.PaymentID,
-		OrderItems: req.OrderItems,
-		ReceivedAt: req.ReceivedAt,
+		UserID:        req.UserID,
+		SellerID:      req.SellerID,
+		PaymentID:     req.PaymentID,
+		OrderItems:    req.OrderItems,
+		ReceivedAt:    req.ReceivedAt,
+		Note:          req.Note,
+		UserAddressID: req.UserAddressID,
 	}
 	newOrder, err := s.orderRepo.Save(order)
 	if err != nil {

@@ -8,11 +8,13 @@ import (
 )
 
 type CreateOrderRequest struct {
-	UserID     uuid.UUID          `json:"user_id"`
-	SellerID   uuid.UUID          `json:"seller_id"`
-	PaymentID  uuid.UUID          `json:"payment_id"`
-	OrderItems []models.OrderItem `json:"order_items"`
-	ReceivedAt time.Time          `json:"received_at"`
+	UserID        uuid.UUID          `json:"user_id"`
+	SellerID      uuid.UUID          `json:"seller_id"`
+	PaymentID     uuid.UUID          `json:"payment_id"`
+	OrderItems    []models.OrderItem `json:"order_items"`
+	ReceivedAt    time.Time          `json:"received_at"`
+	UserAddressID uuid.UUID          `json:"user_address_id"`
+	Note          string             `json:"note"`
 }
 
 type CreateOrderResponse struct {
