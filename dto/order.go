@@ -1,8 +1,6 @@
 package dto
 
 import (
-	"time"
-
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/google/uuid"
 )
@@ -12,7 +10,7 @@ type CreateOrderRequest struct {
 	SellerID      uuid.UUID          `json:"seller_id"`
 	PaymentID     uuid.UUID          `json:"payment_id"`
 	OrderItems    []models.OrderItem `json:"order_items"`
-	ReceivedAt    time.Time          `json:"received_at"`
+	ReceivedAt    LocalTime          `json:"received_at" `
 	UserAddressID uuid.UUID          `json:"user_address_id"`
 	Note          string             `json:"note"`
 }

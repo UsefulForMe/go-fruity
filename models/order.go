@@ -18,6 +18,7 @@ type Order struct {
 	Seller        Seller      `json:"seller"`
 	OrderItems    []OrderItem `json:"order_items" gorm:"foreignKey:OrderID"`
 	PaymentID     uuid.UUID   `json:"payment_id"`
+	
 	Payment       Payment     `json:"payment"`
 	Tracks        []Track     `json:"tracks" gorm:"foreignKey:OrderID"`
 	ReceivedAt    time.Time   `json:"received_at"`

@@ -1,6 +1,8 @@
 package services
 
 import (
+	"time"
+
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
@@ -28,7 +30,7 @@ func (s DefaultOrderService) CreateOrder(req dto.CreateOrderRequest) (*dto.Creat
 		SellerID:      req.SellerID,
 		PaymentID:     req.PaymentID,
 		OrderItems:    req.OrderItems,
-		ReceivedAt:    req.ReceivedAt,
+		ReceivedAt:    time.Time(req.ReceivedAt),
 		Note:          req.Note,
 		UserAddressID: req.UserAddressID,
 	}
