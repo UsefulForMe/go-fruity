@@ -46,7 +46,7 @@ func Test_login_should_return_status_code_200(t *testing.T) {
 	recorder := httptest.NewRecorder()
 	router.ServeHTTP(recorder, req)
 
-	if recorder.Code != 201 {
+	if recorder.Code != 200 {
 		t.Errorf("Expected status code to be 200, got %d", recorder.Code)
 	}
 
