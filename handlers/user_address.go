@@ -23,7 +23,7 @@ func NewUserAddressHandler(userAddressService services.UserAddressService) UserA
 func (h UserAddressHandler) CreateUserAddress() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.CreateUserAddressRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
+		if err := c.BindJSON(&req); err != nil {
 			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
 			return
 		}

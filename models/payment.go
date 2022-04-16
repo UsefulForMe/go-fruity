@@ -10,4 +10,5 @@ type Payment struct {
 	Status    string    `json:"status" gorm:"type:varchar(100);default:active"`
 	AccountNo string    `json:"account_no" gorm:"type:varchar(100)"`
 	Logo      string    `json:"logo" gorm:"type:varchar(100)"`
+	IsDefault bool      `json:"is_default" gorm:"type:boolean"`
 }

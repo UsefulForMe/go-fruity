@@ -11,11 +11,16 @@ import (
 	"google.golang.org/api/option"
 )
 
-type FirebaseService struct {
+//go:generate mockgen -destination=../mocks/services/mock_firebase_service.go -package=services  github.com/UsefulForMe/go-ecommerce/services FirebaseService
+
+type FirebaseService interface {
+	VerifyIDToken(idToken string) (*auth.Token, *errs.AppError)
+}
+type DefaultFirebaseService struct {
 	firebase *firebase.App
 }
 
-func (s FirebaseService) VerifyIDToken(idToken string) (*auth.Token, *errs.AppError) {
+func (s DefaultFirebaseService) VerifyIDToken(idToken string) (*auth.Token, *errs.AppError) {
 	client, err := s.firebase.Auth(context.Background())
 	if err != nil {
 		return nil, errs.NewUnexpectedError("Error when getting firebase auth client: " + err.Error())
@@ -27,7 +32,7 @@ func (s FirebaseService) VerifyIDToken(idToken string) (*auth.Token, *errs.AppEr
 	return token, nil
 }
 
-func NewFirebaseService() FirebaseService {
+func NewFirebaseService() DefaultFirebaseService {
 	wd, err := os.Getwd()
 	if err != nil {
 		logger.Error("Error when getting working directory: " + err.Error())
@@ -40,7 +45,7 @@ func NewFirebaseService() FirebaseService {
 		logger.Error("Error initializing firebase app: " + err.Error())
 		panic(err)
 	}
-	return FirebaseService{
+	return DefaultFirebaseService{
 		firebase: app,
 	}
 }

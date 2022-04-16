@@ -9,6 +9,7 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+//go:generate mockgen -destination=../mocks/services/mock_user_service.go -package=services  github.com/UsefulForMe/go-ecommerce/services UserService
 type UserService interface {
 	Create(user dto.CreateUserRequest) (*dto.CreateUserResponse, *errs.AppError)
 	List() (*dto.GetAllUserResponse, *errs.AppError)

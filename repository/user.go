@@ -30,10 +30,11 @@ func (d DefaultUserRepository) Save(user models.User) (*models.User, *errs.AppEr
 	}
 
 	payment := models.Payment{
-		Name:     "Tiền mặt",
-		UserID:   user.ID,
-		Logo:     "https://i.imgur.com/exPW606.png",
-		Provider: "cash",
+		Name:      "Tiền mặt",
+		UserID:    user.ID,
+		Logo:      "https://i.imgur.com/exPW606.png",
+		Provider:  "cash",
+		IsDefault: true,
 	}
 	if err := tx.Create(&payment).Error; err != nil {
 		logger.Error("Error when create payment " + err.Error())

@@ -1,6 +1,9 @@
 package config
 
 import (
+	"os"
+	"regexp"
+
 	"github.com/UsefulForMe/go-ecommerce/logger"
 	"github.com/joho/godotenv"
 	"github.com/mitchellh/mapstructure"
@@ -9,6 +12,7 @@ import (
 type Config struct {
 	Debug string `mapstructure:"DEBUG"`
 	Port  string `mapstructure:"PORT"`
+	ENV   string `mapstructure:"ENV"`
 
 	PostresUser  string `mapstructure:"POSTGRES_USER"`
 	PostresPass  string `mapstructure:"POSTGRES_PASSWORD"`
@@ -27,10 +31,20 @@ type Config struct {
 
 var Cfg *Config
 
+func (c *Config) IsProduction() bool {
+	return c.ENV == "production"
+}
+
 func getConfig() *Config {
-	confMap, err := godotenv.Read(".env")
+
+	projectDir := "go-ecommerce"
+	cwd, _ := os.Getwd()
+	re := regexp.MustCompile(`^(.*` + projectDir + `)`)
+	rootPath := re.Find([]byte(cwd))
+	confMap, err := godotenv.Read(string(rootPath) + `/.env`)
 	if err != nil {
 		logger.Error("Error loading .env file " + err.Error())
+		os.Exit(1)
 	}
 	var conf *Config
 

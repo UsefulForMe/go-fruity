@@ -30,6 +30,7 @@ func (s DefaultPaymentService) CreatePayment(req dto.CreatePaymentRequest) (*dto
 		AccountNo: req.AccountNo,
 		UserID:    req.UserID,
 		Logo:      req.Logo,
+		IsDefault: req.IsDefault,
 	}
 
 	newPayment, err := s.paymentRepository.Save(payment)

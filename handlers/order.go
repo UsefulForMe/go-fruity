@@ -23,7 +23,7 @@ func NewOrderHandler(orderService services.OrderService) OrderHandler {
 func (h OrderHandler) CreateOrder() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.CreateOrderRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
+		if err := c.BindJSON(&req); err != nil {
 			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
 			return
 		}

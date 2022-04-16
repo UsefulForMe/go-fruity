@@ -11,6 +11,7 @@ type CreatePaymentRequest struct {
 	AccountNo string    `json:"account_no"`
 	UserID    uuid.UUID `json:"user_id"`
 	Logo      string    `json:"logo"`
+	IsDefault bool      `json:"is_default"`
 }
 
 type CreatePaymentResponse struct {

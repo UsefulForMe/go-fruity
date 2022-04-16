@@ -5,8 +5,8 @@ FROM golang:alpine AS builder
 #  Build 
 ENV TZ=Asia/Ho_Chi_Minh
 RUN apk update && apk add alpine-sdk git && rm -rf /var/cache/apk/*
-RUN mkdir -p /api
-WORKDIR /api
+RUN mkdir -p /go-ecommerce
+WORKDIR /go-ecommerce
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
@@ -17,8 +17,8 @@ COPY serviceAccountKey.json ./build
 
 # Run
 FROM alpine:latest
-RUN mkdir -p /api
-WORKDIR /api
-COPY --from=builder /api/build .
+RUN mkdir -p /go-ecommerce
+WORKDIR /go-ecommerce
+COPY --from=builder /go-ecommerce/build .
 EXPOSE 3000
 ENTRYPOINT ["./app"]
