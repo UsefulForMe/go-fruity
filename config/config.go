@@ -2,7 +2,7 @@ package config
 
 import (
 	"os"
-	"regexp"
+	"strings"
 
 	"github.com/UsefulForMe/go-ecommerce/logger"
 	"github.com/joho/godotenv"
@@ -37,21 +37,22 @@ func (c *Config) IsProduction() bool {
 
 func getConfig() *Config {
 
-	projectDir := "go-fruity"
-	cwd, _ := os.Getwd()
-	re := regexp.MustCompile(`^(.*` + projectDir + `)`)
-	rootPath := re.Find([]byte(cwd))
-	confMap, err := godotenv.Read(string(rootPath) + `/.env`)
+	godotenv.Load()
+
+	var conf *Config
+	envMap := make(map[string]interface{})
+	for _, env := range os.Environ() {
+		key := env[:strings.Index(env, "=")]
+		value := env[strings.Index(env, "=")+1:]
+		envMap[key] = value
+	}
+
+	err := mapstructure.Decode(envMap, &conf)
 	if err != nil {
-		logger.Error("Error loading .env file " + err.Error())
+		logger.Error(err.Error())
 		os.Exit(1)
 	}
-	var conf *Config
 
-	err = mapstructure.Decode(confMap, &conf)
-	if err != nil {
-		logger.Error("Error when map config file " + err.Error())
-	}
 	return conf
 }
 
