@@ -1,19 +1,16 @@
 name: golang-pipeline
 on: push
+env:
+  PORT: 3000
+  DEBUG: true
+  ENV: test
+  JWT_SECRET_KEY: xinchaominhlasecretkey
+          
 jobs:
   test:
     runs-on: ubuntu-18.04
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
     steps:
-      - name: Set environment variables
-        env:
-          PORT: 3000
-          DEBUG: true
-          ENV: test
-          JWT_SECRET_KEY: xinchaominhlasecretkey
-          
-
-
       - uses: actions/checkout@v2
       - name: Run Unit Tests
         run: go test ./...
