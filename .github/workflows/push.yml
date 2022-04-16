@@ -6,11 +6,12 @@ jobs:
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')
     steps:
       - name: Set environment variables
-        run: |
-          $PORT=3000
-          $DEBUG=true
-          $ENV=test
-          $JWT_SECRET_KEY=xinchaominhlasecretkey
+        env:
+          PORT: 3000
+          DEBUG: true
+          ENV: test
+          JWT_SECRET_KEY: xinchaominhlasecretkey
+          
 
 
       - uses: actions/checkout@v2
