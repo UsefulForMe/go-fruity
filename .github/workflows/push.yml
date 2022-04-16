@@ -12,6 +12,12 @@ jobs:
           echo "ENV=test" >> .env
           echo "DEBUG=true" >> .env
           cat .env
+          echo $GITHUB_WORKSPACE
+        working-directory: "${GITHUB_WORKSPACE}"
+
+
       - uses: actions/checkout@v2
       - name: Run Unit Tests
         run: go test ./...
+
+        
