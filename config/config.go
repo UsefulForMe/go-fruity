@@ -37,7 +37,7 @@ func (c *Config) IsProduction() bool {
 
 func getConfig() *Config {
 
-	projectDir := "go-ecommerce"
+	projectDir := "go-fruity"
 	cwd, _ := os.Getwd()
 	re := regexp.MustCompile(`^(.*` + projectDir + `)`)
 	rootPath := re.Find([]byte(cwd))
