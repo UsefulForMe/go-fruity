@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/UsefulForMe/go-ecommerce/dto"
@@ -12,11 +13,13 @@ import (
 
 type OrderHandler struct {
 	orderService services.OrderService
+	firebaseFCM  services.FirebaseMessageService
 }
 
-func NewOrderHandler(orderService services.OrderService) OrderHandler {
+func NewOrderHandler(orderService services.OrderService, firebaseFCM services.FirebaseMessageService) OrderHandler {
 	return OrderHandler{
 		orderService: orderService,
+		firebaseFCM:  firebaseFCM,
 	}
 }
 
@@ -34,6 +37,14 @@ func (h OrderHandler) CreateOrder() gin.HandlerFunc {
 		if err != nil {
 			WriteResponseError(c, err)
 		} else {
+			title := "🛒 Tạo đơn hàng thành công"
+			body := fmt.Sprintf("Đơn hàng %s của bạn đã được tạo thành công !", order.Order.TextID)
+			go h.firebaseFCM.SendNotification(dto.SendNotificationRequest{
+				Title: title,
+				Body:  body,
+				Token: user.FCMToken,
+			})
+
 			WriteResponse(c, http.StatusCreated, order)
 		}
 

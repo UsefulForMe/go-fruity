@@ -9,6 +9,7 @@ import (
 )
 
 func OrderRoute(route *gin.RouterGroup) {
-	h := handlers.NewOrderHandler(services.NewOrderService(repository.NewOrderRepository(config.DB)))
+	firebaseFCM := services.NewFirebaseMessageService(config.FirebaseApp)
+	h := handlers.NewOrderHandler(services.NewOrderService(repository.NewOrderRepository(config.DB)), firebaseFCM)
 	route.GET("", h.MyOrders()).POST("", h.CreateOrder())
 }

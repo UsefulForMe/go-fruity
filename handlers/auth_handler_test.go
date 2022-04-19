@@ -33,7 +33,7 @@ func Test_login_should_return_status_code_200(t *testing.T) {
 
 	mockService.EXPECT().Login(gomock.Any()).Return(&dto.LoginUserResponse{}, nil)
 
-	uh := NewUserHandler(
+	uh := NewAuthHandler(
 		mockService,
 		mockFirebaseService,
 	)

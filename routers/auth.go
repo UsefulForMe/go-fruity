@@ -10,7 +10,7 @@ import (
 
 func AuthRouter(route *gin.RouterGroup) {
 
-	h := handlers.NewUserHandler(services.NewUserService(repository.NewUserRepository(config.DB)), services.NewFirebaseService())
+	h := handlers.NewAuthHandler(services.NewUserService(repository.NewUserRepository(config.DB)), services.NewFirebaseService(config.FirebaseApp))
 
 	route.POST("login", h.Login())
 

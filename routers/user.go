@@ -10,9 +10,11 @@ import (
 
 func UserRouter(userRouer *gin.RouterGroup) {
 	r := repository.NewUserRepository(config.DB)
-	h := handlers.NewUserHandler(services.NewUserService(r), services.NewFirebaseService())
+	h := handlers.NewUserHandler(services.NewUserService(r))
 
 	userRouer.GET("", h.GetAll())
 	userRouer.POST("", h.Create())
+
+	userRouer.PUT("/update-my-fcm-token", h.UpdateFCMToken())
 
 }
