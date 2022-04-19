@@ -10,6 +10,7 @@ import (
 
 func main() {
 	config.InitConfig()
+	config.InitFirebase()
 	r := app.SetupApp()
 
 	port := config.Cfg.Port

@@ -38,6 +38,7 @@ func (s DefaultOrderService) CreateOrder(req dto.CreateOrderRequest) (*dto.Creat
 	if err != nil {
 		return nil, err
 	}
+
 	return &dto.CreateOrderResponse{
 		Order: *newOrder}, nil
 }
