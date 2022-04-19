@@ -29,7 +29,7 @@ func Test_login_should_return_status_code_200(t *testing.T) {
 	router := setup()
 
 	mockService := services.NewMockUserService(c)
-	mockFirebaseService := services.NewMockFirebaseService(c)
+	mockFirebaseService := services.NewMockFirebaseAuthService(c)
 
 	mockService.EXPECT().Login(gomock.Any()).Return(&dto.LoginUserResponse{}, nil)
 

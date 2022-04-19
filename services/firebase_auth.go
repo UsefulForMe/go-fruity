@@ -9,7 +9,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/logger"
 )
 
-//go:generate mockgen -destination=../mocks/services/mock_firebase_service.go -package=services  github.com/UsefulForMe/go-ecommerce/services FirebaseService
+//go:generate mockgen -destination=../mocks/services/mock_firebase_auth_service.go -package=services  github.com/UsefulForMe/go-ecommerce/services FirebaseAuthService
 
 type FirebaseAuthService interface {
 	VerifyIDToken(idToken string) (*auth.Token, *errs.AppError)
@@ -27,7 +27,7 @@ func (s DefaultFirebaseAuthService) VerifyIDToken(idToken string) (*auth.Token, 
 	return token, nil
 }
 
-func NewFirebaseService(app *firebase.App) DefaultFirebaseAuthService {
+func NewFirebaseAuthService(app *firebase.App) DefaultFirebaseAuthService {
 
 	authClient, err := app.Auth(context.Background())
 	if err != nil {

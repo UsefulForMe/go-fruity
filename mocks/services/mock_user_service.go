@@ -79,3 +79,18 @@ func (mr *MockUserServiceMockRecorder) Login(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockUserService)(nil).Login), arg0)
 }
+
+// UpdateFCMToken mocks base method.
+func (m *MockUserService) UpdateFCMToken(arg0 dto.UpdateFCMTokenRequest) (*dto.UpdateFCMTokenResponse, *errs.AppError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateFCMToken", arg0)
+	ret0, _ := ret[0].(*dto.UpdateFCMTokenResponse)
+	ret1, _ := ret[1].(*errs.AppError)
+	return ret0, ret1
+}
+
+// UpdateFCMToken indicates an expected call of UpdateFCMToken.
+func (mr *MockUserServiceMockRecorder) UpdateFCMToken(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFCMToken", reflect.TypeOf((*MockUserService)(nil).UpdateFCMToken), arg0)
+}
