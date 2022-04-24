@@ -28,3 +28,32 @@ type MyAddressesRequest struct {
 type MyAddressesResponse struct {
 	UserAddresses []models.UserAddress `json:"user_addresses"`
 }
+
+type GetUserAddressByIDRequest struct {
+	UserAddressID uuid.UUID `json:"user_address_id"`
+}
+
+type GetUserAddressByIDResponse struct {
+	UserAddress models.UserAddress `json:"user_address"`
+}
+
+type UpdateUserAddressRequest struct {
+	UserAddressID uuid.UUID `json:"user_address_id"`
+	IsDefault     bool      `json:"is_default" gorm:"default:false"`
+	PhoneNumber   string    `json:"phone_number" gorm:"type:varchar(100);not null"`
+	FullName      string    `json:"full_name" gorm:"type:varchar(100)"`
+	Address       string    `json:"address" gorm:"type:varchar(100); not null"`
+	Longitude     float32   `json:"longitude" gorm:"type:numeric; not null"`
+	Latitude      float32   `json:"latitude" gorm:"type:numeric; not null"`
+	Note          string    `json:"note" gorm:"type:varchar(255);"`
+	UserID        uuid.UUID `json:"user_id"`
+}
+
+type UpdateUserAddressResponse struct {
+	UserAddress models.UserAddress `json:"user_address"`
+}
+
+type DeleteUserAddressRequest struct {
+	UserAddressID uuid.UUID `json:"user_address_id"`
+	UserID        uuid.UUID `json:"user_id"`
+}

@@ -8,6 +8,7 @@ type UserAddress struct {
 	CommonModelFields
 	UserID      uuid.UUID `json:"user_id" gorm:"type:uuid;not null"`
 	IsDefault   bool      `json:"is_default" gorm:"default:false"`
+	Status      string    `json:"status" gorm:"type:varchar(100);not null; default:'active'"`
 	PhoneNumber string    `json:"phone_number" gorm:"type:varchar(100);not null"`
 	FullName    string    `json:"full_name" gorm:"type:varchar(100)"`
 	Address     string    `json:"address" gorm:"type:varchar(100); not null"`

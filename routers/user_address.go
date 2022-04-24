@@ -12,4 +12,5 @@ func UserAddressRoute(router *gin.RouterGroup) {
 	h := handlers.NewUserAddressHandler(services.NewUserAddressService(repository.NewUserAddressRepository(config.DB)))
 	router.GET("", h.MyAddresses()).POST("", h.CreateUserAddress())
 
+	router.GET("/:id", h.GetUserAddressByID()).PUT("/:id", h.UpdateUserAddress()).DELETE("/:id", h.DeleteUserAddress())
 }
