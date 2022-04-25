@@ -21,7 +21,17 @@ type CreateOrderResponse struct {
 
 type MyOrdersRequest struct {
 	UserID uuid.UUID `json:"user_id"`
+	Status string    `json:"status"`
 }
 type MyOrdersResponse struct {
 	Orders []models.Order `json:"orders"`
+}
+
+type GetOrderByIDRequest struct {
+	OrderID uuid.UUID `json:"order_id"`
+	UserID  uuid.UUID `json:"user_id"`
+}
+
+type GetOrderByIDResponse struct {
+	Order models.Order `json:"order"`
 }

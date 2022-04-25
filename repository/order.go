@@ -13,6 +13,8 @@ import (
 type OrderRepository interface {
 	Save(order models.Order) (*models.Order, *errs.AppError)
 	FindByUserID(userID uuid.UUID) ([]models.Order, *errs.AppError)
+
+	FindByID(orderID uuid.UUID) (*models.Order, *errs.AppError)
 }
 
 type DefaultOrderRepository struct {
@@ -58,4 +60,13 @@ func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Orde
 		return nil, errs.NewUnexpectedError("Unexpected error while finding orders by user id " + err.Error())
 	}
 	return orders, nil
+}
+
+func (repo DefaultOrderRepository) FindByID(orderID uuid.UUID) (*models.Order, *errs.AppError) {
+	var order models.Order
+	if err := repo.db.Model(&order).Where("id = ?", orderID).Preload("OrderItems.Product").Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Find(&order).Error; err != nil {
+		logger.Error("Error while finding order by id " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected error while finding order by id " + err.Error())
+	}
+	return &order, nil
 }

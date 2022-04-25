@@ -12,6 +12,7 @@ import (
 type OrderService interface {
 	CreateOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, *errs.AppError)
 	MyOrders(req dto.MyOrdersRequest) (*dto.MyOrdersResponse, *errs.AppError)
+	GetOrderByID(req dto.GetOrderByIDRequest) (*dto.GetOrderByIDResponse, *errs.AppError)
 }
 
 type DefaultOrderService struct {
@@ -48,6 +49,22 @@ func (s DefaultOrderService) MyOrders(req dto.MyOrdersRequest) (*dto.MyOrdersRes
 	if err != nil {
 		return nil, err
 	}
+	filterOrders := []models.Order{}
+	for _, order := range orders {
+		if order.Status == req.Status {
+			filterOrders = append(filterOrders, order)
+		}
+	}
+
 	return &dto.MyOrdersResponse{
-		Orders: orders}, nil
+		Orders: filterOrders}, nil
+}
+
+func (s DefaultOrderService) GetOrderByID(req dto.GetOrderByIDRequest) (*dto.GetOrderByIDResponse, *errs.AppError) {
+	order, err := s.orderRepo.FindByID(req.OrderID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.GetOrderByIDResponse{
+		Order: *order}, nil
 }

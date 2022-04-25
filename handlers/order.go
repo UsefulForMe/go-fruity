@@ -9,6 +9,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/UsefulForMe/go-ecommerce/services"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type OrderHandler struct {
@@ -56,8 +57,36 @@ func (h OrderHandler) MyOrders() gin.HandlerFunc {
 		user := c.MustGet("user").(models.User)
 		req := dto.MyOrdersRequest{
 			UserID: user.ID,
+			Status: c.DefaultQuery("status", "processing"),
 		}
+
 		res, err := h.orderService.MyOrders(req)
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
+	}
+}
+
+func (h OrderHandler) GetOrderByID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.GetOrderByIDRequest
+		if err := c.BindJSON(&req); err != nil {
+			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
+			return
+		}
+		user := c.MustGet("user").(models.User)
+
+		if req.UserID != user.ID {
+			WriteResponseError(c, errs.NewForbiddenError("UserID không hợp lệ"))
+			return
+		}
+
+		orderId := uuid.MustParse(c.Param("order_id"))
+		req.OrderID = orderId
+
+		res, err := h.orderService.GetOrderByID(req)
 		if err != nil {
 			WriteResponseError(c, err)
 		} else {

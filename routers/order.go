@@ -12,4 +12,6 @@ func OrderRoute(route *gin.RouterGroup) {
 	firebaseFCM := services.NewFirebaseMessageService(config.FirebaseApp)
 	h := handlers.NewOrderHandler(services.NewOrderService(repository.NewOrderRepository(config.DB)), firebaseFCM)
 	route.GET("", h.MyOrders()).POST("", h.CreateOrder())
+
+	route.GET("/:order_id", h.GetOrderByID())
 }
