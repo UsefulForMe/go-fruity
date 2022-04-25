@@ -25,6 +25,10 @@ jobs:
           with:
             hosts: 'fruity@100.26.42.214'
             privateKey: ${{ secrets.KEY }}
-            script: cd /home/fruity/go-fruity && git reset --hard origin/master && git pull && docker-compose up -d --build
+            command: |
+                cd /home/fruity/go-fruity
+                git reset --hard origin/master
+                git pull
+                docker-compose up -d --build
 
         
