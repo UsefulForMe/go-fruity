@@ -23,7 +23,7 @@ jobs:
         - name: Execute SSH commmands on remote server
           uses: JimCronqvist/action-ssh@master
           with:
-            hosts: 'fruity@100.26.42.214:22'
+            hosts: 'fruity@100.26.42.214'
             privateKey: ${{ secrets.KEY }}
             script: |
                 cd /home/fruity/go-fruity
