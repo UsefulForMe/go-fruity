@@ -3,7 +3,6 @@
 FROM golang:alpine AS builder
 
 #  Build 
-ENV TZ=Asia/Ho_Chi_Minh
 RUN apk update && apk add alpine-sdk git && rm -rf /var/cache/apk/*
 RUN mkdir -p /go-ecommerce
 WORKDIR /go-ecommerce

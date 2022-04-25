@@ -1,6 +1,7 @@
 package app
 
 import (
+	"os"
 	"reflect"
 
 	"github.com/UsefulForMe/go-ecommerce/config"
@@ -26,6 +27,8 @@ func ValidateJSONDateType(field reflect.Value) interface{} {
 func SetupApp() *gin.Engine {
 
 	config.InitDatabase()
+
+	os.Setenv("TZ", config.Cfg.Tz)
 
 	gin.SetMode(gin.ReleaseMode)
 	app := gin.Default()

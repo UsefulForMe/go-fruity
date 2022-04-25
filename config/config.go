@@ -13,6 +13,7 @@ type Config struct {
 	Debug string `mapstructure:"DEBUG"`
 	Port  string `mapstructure:"PORT"`
 	ENV   string `mapstructure:"ENV"`
+	Tz    string `mapstructure:"TZ"`
 
 	PostresUser  string `mapstructure:"POSTGRES_USER"`
 	PostresPass  string `mapstructure:"POSTGRES_PASSWORD"`
