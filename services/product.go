@@ -5,6 +5,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/UsefulForMe/go-ecommerce/repository"
+	"github.com/google/uuid"
 )
 
 type ProductService interface {
@@ -14,6 +15,7 @@ type ProductService interface {
 	GetSaleShockProducts(request dto.GetProductsSaleShockRequest) (*dto.GetProductsSaleShockResponse, *errs.AppError)
 	GetProducts(req dto.GetProductsRequest) (*dto.GetProductsResponse, *errs.AppError)
 	GetProduct(dto.GetProductRequest) (*dto.GetProductResponse, *errs.AppError)
+	GetProductsByIDS(req dto.GetProductsByIDsRequest) (*dto.GetProductsByIDsResponse, *errs.AppError)
 }
 
 type DefaultProductService struct {
@@ -86,4 +88,16 @@ func (s DefaultProductService) GetSaleShockProducts(req dto.GetProductsSaleShock
 		return nil, err
 	}
 	return &dto.GetProductsSaleShockResponse{Products: products}, nil
+}
+func (s DefaultProductService) GetProductsByIDS(req dto.GetProductsByIDsRequest) (*dto.GetProductsByIDsResponse, *errs.AppError) {
+	ids := make([]uuid.UUID, 0)
+
+	for _, id := range req.IDs {
+		ids = append(ids, uuid.MustParse(id))
+	}
+	products, err := s.productRepository.FindByIDs(ids)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.GetProductsByIDsResponse{Products: products}, nil
 }

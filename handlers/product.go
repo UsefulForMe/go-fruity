@@ -115,3 +115,17 @@ func (h ProductHandler) GetProductSaleShock() gin.HandlerFunc {
 		WriteResponse(c, http.StatusOK, products)
 	}
 }
+func (h ProductHandler) GetProductsByID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.GetProductsByIDsRequest
+
+		ids := c.QueryArray("ids")
+		req.IDs = ids
+		products, err := h.productService.GetProductsByIDS(req)
+		if err != nil {
+			WriteResponseError(c, err)
+			return
+		}
+		WriteResponse(c, http.StatusOK, products)
+	}
+}

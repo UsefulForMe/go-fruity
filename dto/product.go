@@ -56,3 +56,9 @@ type GetProductsSaleShockRequest struct {
 type GetProductsSaleShockResponse struct {
 	Products []models.Product `json:"products"`
 }
+type GetProductsByIDsRequest struct {
+	IDs []string `json:"ids"`
+}
+type GetProductsByIDsResponse struct {
+	Products []models.Product `json:"products"`
+}
