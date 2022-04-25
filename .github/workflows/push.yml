@@ -20,14 +20,11 @@ jobs:
       needs: test
       if: github.ref == 'refs/heads/master'
       steps:
-        - name: executing remote ssh commands using password
-          uses: appleboy/ssh-action@master
+        - name: Execute SSH commmands on remote server
+          uses: JimCronqvist/action-ssh@master
           with:
-            host: ${{ secrets.HOST }}
-            username: ${{ secrets.USERNAME }}
-            key: ${{ secrets.KEY }}
-            port: ${{ secrets.PORT }}
-            command_timeout: 200m
+            hosts: 'fruity@100.26.42.214:22'
+            privateKey: ${{ secrets.KEY }}
             script: |
                 cd /home/fruity/go-fruity
                 git reset --hard origin/master
