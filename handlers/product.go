@@ -25,7 +25,7 @@ func NewProductHandler(productService services.ProductService) ProductHandler {
 func (h ProductHandler) CreateProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var request dto.CreateProductRequest
-		if err := c.ShouldBindJSON(&request); err != nil {
+		if err := c.BindJSON(&request); err != nil {
 			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
 			return
 		}

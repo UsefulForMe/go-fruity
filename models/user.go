@@ -6,4 +6,6 @@ type User struct {
 	Email       string        `json:"email,omitempty" gorm:"type:varchar(100);unique_index"`
 	PhoneNumber string        `json:"phone_number" gorm:"type:varchar(100);unique_index;unique"`
 	Addresses   []UserAddress `json:"addresses,omitempty" gorm:"foreignKey:UserID"`
+	Payments    []Payment     `json:"payments,omitempty" gorm:"foreignKey:UserID"`
+	FCMToken    string        `json:"fcm_token" gorm:"type:varchar(255)"`
 }

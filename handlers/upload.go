@@ -16,7 +16,7 @@ type UploadHandler struct {
 func (h *UploadHandler) Upload() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var form dto.UploadFileRequest
-		err := c.ShouldBind(&form)
+		err := c.Bind(&form)
 		if err != nil {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind file "+err.Error()))
 			return
@@ -34,7 +34,7 @@ func (h *UploadHandler) Upload() gin.HandlerFunc {
 func (h *UploadHandler) UploadMany() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var form dto.UploadFilesRequest
-		err := c.ShouldBind(&form)
+		err := c.Bind(&form)
 		if err != nil {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind file "+err.Error()))
 			return
@@ -53,7 +53,7 @@ func (h *UploadHandler) UploadMany() gin.HandlerFunc {
 func (h *UploadHandler) Delete() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.DeleteFileRequest
-		err := c.ShouldBind(&req)
+		err := c.Bind(&req)
 		if err != nil {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind body "+err.Error()))
 			return
@@ -70,7 +70,7 @@ func (h *UploadHandler) Delete() gin.HandlerFunc {
 func (h *UploadHandler) DeleteMany() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.DeleteFilesRequest
-		err := c.ShouldBind(&req)
+		err := c.Bind(&req)
 		if err != nil {
 			WriteResponseError(c, errs.NewBadRequestError("Error when bind body "+err.Error()))
 			return

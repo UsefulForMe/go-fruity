@@ -2,6 +2,7 @@ package dto
 
 import (
 	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/google/uuid"
 )
 
 type GetAllUserResponse struct {
@@ -13,16 +14,15 @@ type CreateUserResponse struct {
 }
 
 type CreateUserRequest struct {
-	PhoneNumber string `json:"phone_number"`
-	IdToken     string `json:"id_token"`
+	PhoneNumber string `json:"phone_number"  binding:"required"`
+	IdToken     string `json:"id_token" binding:"required"`
 }
 
-type LoginUserRequest struct {
-	PhoneNumber string `json:"phone_number"`
-	IdToken     string `json:"id_token"`
+type UpdateFCMTokenRequest struct {
+	Token  string    `json:"token" binding:"required"`
+	UserID uuid.UUID `json:"user_id"`
 }
-type LoginUserResponse struct {
-	User     models.User `json:"user"`
-	Token    string      `json:"token"`
-	ExpireAt int64       `json:"expire_at"`
+
+type UpdateFCMTokenResponse struct {
+	Success bool `json:"success"`
 }

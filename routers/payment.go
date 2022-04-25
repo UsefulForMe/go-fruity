@@ -8,10 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthRouter(route *gin.RouterGroup) {
-
-	h := handlers.NewAuthHandler(services.NewUserService(repository.NewUserRepository(config.DB)), services.NewFirebaseAuthService(config.FirebaseApp))
-
-	route.POST("login", h.Login())
-
+func PaymentRoute(route *gin.RouterGroup) {
+	h := handlers.NewPaymentHandler(services.NewPaymentService(repository.NewPaymentRepository(config.DB)))
+	route.GET("", h.MyPayments()).POST("", h.CreatePayment())
 }

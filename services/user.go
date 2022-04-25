@@ -9,11 +9,14 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+//go:generate mockgen -destination=../mocks/services/mock_user_service.go -package=services  github.com/UsefulForMe/go-ecommerce/services UserService
 type UserService interface {
 	Create(user dto.CreateUserRequest) (*dto.CreateUserResponse, *errs.AppError)
 	List() (*dto.GetAllUserResponse, *errs.AppError)
 
 	Login(user dto.LoginUserRequest) (*dto.LoginUserResponse, *errs.AppError)
+
+	UpdateFCMToken(user dto.UpdateFCMTokenRequest) (*dto.UpdateFCMTokenResponse, *errs.AppError)
 }
 
 type DefaultUserService struct {
@@ -82,6 +85,25 @@ func (s DefaultUserService) Login(r dto.LoginUserRequest) (*dto.LoginUserRespons
 		ExpireAt: expiredAt,
 	}
 
+	return &res, nil
+}
+
+func (s DefaultUserService) UpdateFCMToken(r dto.UpdateFCMTokenRequest) (*dto.UpdateFCMTokenResponse, *errs.AppError) {
+
+	user, err := s.repo.FindById(r.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	user.FCMToken = r.Token
+	err = s.repo.Update(user)
+	if err != nil {
+		return nil, err
+	}
+
+	res := dto.UpdateFCMTokenResponse{
+		Success: true,
+	}
 	return &res, nil
 }
 

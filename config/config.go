@@ -1,6 +1,9 @@
 package config
 
 import (
+	"os"
+	"strings"
+
 	"github.com/UsefulForMe/go-ecommerce/logger"
 	"github.com/joho/godotenv"
 	"github.com/mitchellh/mapstructure"
@@ -9,6 +12,7 @@ import (
 type Config struct {
 	Debug string `mapstructure:"DEBUG"`
 	Port  string `mapstructure:"PORT"`
+	ENV   string `mapstructure:"ENV"`
 
 	PostresUser  string `mapstructure:"POSTGRES_USER"`
 	PostresPass  string `mapstructure:"POSTGRES_PASSWORD"`
@@ -27,17 +31,28 @@ type Config struct {
 
 var Cfg *Config
 
-func getConfig() *Config {
-	confMap, err := godotenv.Read(".env")
-	if err != nil {
-		logger.Error("Error loading .env file " + err.Error())
-	}
-	var conf *Config
+func (c *Config) IsProduction() bool {
+	return c.ENV == "production"
+}
 
-	err = mapstructure.Decode(confMap, &conf)
-	if err != nil {
-		logger.Error("Error when map config file " + err.Error())
+func getConfig() *Config {
+
+	godotenv.Load()
+
+	var conf *Config
+	envMap := make(map[string]interface{})
+	for _, env := range os.Environ() {
+		key := env[:strings.Index(env, "=")]
+		value := env[strings.Index(env, "=")+1:]
+		envMap[key] = value
 	}
+
+	err := mapstructure.Decode(envMap, &conf)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
 	return conf
 }
 
