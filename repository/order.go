@@ -59,6 +59,14 @@ func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Orde
 		logger.Error("Error while finding orders by user id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error while finding orders by user id " + err.Error())
 	}
+
+	for _, order := range orders {
+		order.TotalPrice = 0
+		for _, orderItem := range order.OrderItems {
+			order.TotalPrice += orderItem.Price * float32(orderItem.Quantity)
+		}
+	}
+
 	return orders, nil
 }
 
@@ -68,5 +76,11 @@ func (repo DefaultOrderRepository) FindByID(orderID uuid.UUID) (*models.Order, *
 		logger.Error("Error while finding order by id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error while finding order by id " + err.Error())
 	}
+
+	totalPrice := float32(0)
+	for _, item := range order.OrderItems {
+		totalPrice += float32(item.Product.Price) * float32(item.Quantity)
+	}
+	order.TotalPrice = totalPrice
 	return &order, nil
 }
