@@ -8,7 +8,6 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type OrderRepository interface {
@@ -56,7 +55,7 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 
 func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Order, *errs.AppError) {
 	var orders []models.Order
-	if err := repo.db.Model(&orders).Where("user_id = ?", userID).Preload("OrderItems.Product").Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Preload("UserAddress").Find(&orders).Error; err != nil {
+	if err := repo.db.Model(&orders).Where("user_id = ?", userID).Preload("Seller").Preload("OrderItems.Product").Preload("OrderItems.Product.Seller").Preload("Payment").Preload("User").Preload("Tracks").Preload("UserAddress").Find(&orders).Error; err != nil {
 		logger.Error("Error while finding orders by user id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error while finding orders by user id " + err.Error())
 	}
@@ -65,7 +64,7 @@ func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Orde
 
 func (repo DefaultOrderRepository) FindByID(orderID uuid.UUID) (*models.Order, *errs.AppError) {
 	var order models.Order
-	if err := repo.db.Model(&order).Where("id = ?", orderID).Preload("OrderItems.Product").Preload(clause.Associations).Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Find(&order).Error; err != nil {
+	if err := repo.db.Model(&order).Where("id = ?", orderID).Preload("Seller").Preload("OrderItems.Product").Preload("OrderItems.Product.Seller").Preload("Payment").Preload("User").Preload("Tracks").Preload("UserAddress").Find(&order).Error; err != nil {
 		logger.Error("Error while finding order by id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error while finding order by id " + err.Error())
 	}
