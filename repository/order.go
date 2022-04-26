@@ -8,6 +8,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type OrderRepository interface {
@@ -64,7 +65,7 @@ func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Orde
 
 func (repo DefaultOrderRepository) FindByID(orderID uuid.UUID) (*models.Order, *errs.AppError) {
 	var order models.Order
-	if err := repo.db.Model(&order).Where("id = ?", orderID).Preload("OrderItems.Product").Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Find(&order).Error; err != nil {
+	if err := repo.db.Model(&order).Where("id = ?", orderID).Preload("OrderItems.Product").Preload(clause.Associations).Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Find(&order).Error; err != nil {
 		logger.Error("Error while finding order by id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error while finding order by id " + err.Error())
 	}
