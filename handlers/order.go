@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
@@ -143,9 +144,9 @@ func getTitle(status string) string {
 func getBody(order models.Order) string {
 	switch order.Status {
 	case dto.OrderStatusShipping:
-		return fmt.Sprintf("Đơn hàng %s đang trong quá trình vận chuyển và dự kiến được giao vào %s  ", order.TextID, order.ReceivedAt)
+		return fmt.Sprintf("Đơn hàng %s đang trong quá trình vận chuyển và dự kiến được giao vào %s  ", order.TextID, order.ReceivedAt.Format("02/01/2006 15:04:05"))
 	case dto.OrderStatusDelivered:
-		return fmt.Sprintf("Đơn hàng %s đã được giao vào %s ", order.TextID, order.ReceivedAt.Format("02/01/2006 15:04:05"))
+		return fmt.Sprintf("Đơn hàng %s đã được giao vào %s ", order.TextID, time.Now().Format("02/01/2006 15:04:05"))
 	case dto.OrderStatusCancelled:
 		return fmt.Sprintf("Đơn hàng %s đã bị hủy ", order.TextID)
 	default:
