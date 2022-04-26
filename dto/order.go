@@ -29,7 +29,6 @@ type MyOrdersResponse struct {
 
 type GetOrderByIDRequest struct {
 	OrderID uuid.UUID `json:"order_id"`
-	UserID  uuid.UUID `json:"user_id"`
 }
 
 type GetOrderByIDResponse struct {

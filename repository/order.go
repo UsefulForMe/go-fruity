@@ -55,7 +55,7 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 
 func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Order, *errs.AppError) {
 	var orders []models.Order
-	if err := repo.db.Model(&orders).Where("user_id = ?", userID).Preload("OrderItems.Product").Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Find(&orders).Error; err != nil {
+	if err := repo.db.Model(&orders).Where("user_id = ?", userID).Preload("OrderItems.Product").Preload("Payment").Preload("Seller").Preload("User").Preload("Tracks").Preload("UserAddress").Find(&orders).Error; err != nil {
 		logger.Error("Error while finding orders by user id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error while finding orders by user id " + err.Error())
 	}

@@ -72,17 +72,6 @@ func (h OrderHandler) MyOrders() gin.HandlerFunc {
 func (h OrderHandler) GetOrderByID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.GetOrderByIDRequest
-		if err := c.BindJSON(&req); err != nil {
-			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
-			return
-		}
-		user := c.MustGet("user").(models.User)
-
-		if req.UserID != user.ID {
-			WriteResponseError(c, errs.NewForbiddenError("UserID không hợp lệ"))
-			return
-		}
-
 		orderId := uuid.MustParse(c.Param("order_id"))
 		req.OrderID = orderId
 

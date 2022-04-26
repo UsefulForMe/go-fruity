@@ -13,12 +13,12 @@ type Order struct {
 	UserID uuid.UUID `json:"user_id"`
 	User   User      `json:"user"`
 
-	Status        string      `json:"status" gorm:"type:varchar(255); default:processing"`
-	SellerID      uuid.UUID   `json:"seller_id"`
-	Seller        Seller      `json:"seller"`
-	OrderItems    []OrderItem `json:"order_items" gorm:"foreignKey:OrderID"`
-	PaymentID     uuid.UUID   `json:"payment_id"`
-	
+	Status     string      `json:"status" gorm:"type:varchar(255); default:processing"`
+	SellerID   uuid.UUID   `json:"seller_id"`
+	Seller     Seller      `json:"seller"`
+	OrderItems []OrderItem `json:"order_items" gorm:"foreignKey:OrderID"`
+	PaymentID  uuid.UUID   `json:"payment_id"`
+
 	Payment       Payment     `json:"payment"`
 	Tracks        []Track     `json:"tracks" gorm:"foreignKey:OrderID"`
 	ReceivedAt    time.Time   `json:"received_at"`
