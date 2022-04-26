@@ -14,4 +14,6 @@ func OrderRoute(route *gin.RouterGroup) {
 	route.GET("", h.MyOrders()).POST("", h.CreateOrder())
 
 	route.GET("/:order_id", h.GetOrderByID())
+	route.PUT("/:order_id/change-status", h.ChangeOrderStatus())
+
 }

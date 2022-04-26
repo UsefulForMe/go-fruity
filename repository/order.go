@@ -15,6 +15,8 @@ type OrderRepository interface {
 	FindByUserID(userID uuid.UUID) ([]models.Order, *errs.AppError)
 
 	FindByID(orderID uuid.UUID) (*models.Order, *errs.AppError)
+
+	ChangeOrderStatus(orderID uuid.UUID, status string, note string) (*models.Order, *errs.AppError)
 }
 
 type DefaultOrderRepository struct {
@@ -85,5 +87,46 @@ func (repo DefaultOrderRepository) FindByID(orderID uuid.UUID) (*models.Order, *
 		totalPrice += float32(item.Product.Price) * float32(item.Quantity)
 	}
 	order.TotalPrice = totalPrice
+	return &order, nil
+}
+
+func (repo DefaultOrderRepository) ChangeOrderStatus(orderID uuid.UUID, status string, note string) (*models.Order, *errs.AppError) {
+	tx := repo.db.Begin()
+
+	var order models.Order
+	if err := tx.Model(&order).Where("id = ?", orderID).Find(&order).Error; err != nil {
+		logger.Error("Error while finding order by id " + err.Error())
+		tx.Rollback()
+		return nil, errs.NewUnexpectedError("Unexpected error while finding order by id " + err.Error())
+	}
+
+	if order.Status == status {
+		return &order, nil
+	}
+
+	track := models.Track{
+		OrderID: orderID,
+		Note:    note,
+		Time:    time.Now(),
+		Status:  status,
+	}
+	if err := tx.Create(&track).Error; err != nil {
+		logger.Error("Error while creating an track " + err.Error())
+		tx.Rollback()
+		return nil, errs.NewUnexpectedError("Unexpected error while creating an track " + err.Error())
+	}
+
+	if err := tx.Model(&order).Where("id = ?", orderID).Update("status", status).Error; err != nil {
+		logger.Error("Error while updating order status " + err.Error())
+		tx.Rollback()
+		return nil, errs.NewUnexpectedError("Unexpected error while updating order status " + err.Error())
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		logger.Error("Error while commiting an order " + err.Error())
+		tx.Rollback()
+		return nil, errs.NewUnexpectedError("Unexpected error while commiting an order " + err.Error())
+	}
+
 	return &order, nil
 }

@@ -83,3 +83,30 @@ func (h OrderHandler) GetOrderByID() gin.HandlerFunc {
 		}
 	}
 }
+
+func (h OrderHandler) ChangeOrderStatus() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.ChangeOrderStatusRequest
+		if err := c.BindJSON(&req); err != nil {
+			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
+			return
+		}
+		if err := req.IsValidStatus(); err != nil {
+			WriteResponseError(c, err)
+			return
+		}
+
+		orderId := uuid.MustParse(c.Param("order_id"))
+		req.OrderID = orderId
+
+		user := c.MustGet("user").(models.User)
+		req.UserID = user.ID
+
+		res, err := h.orderService.ChangeOrderStatus(req)
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
+	}
+}

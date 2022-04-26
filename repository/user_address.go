@@ -31,13 +31,13 @@ func (r DefaultUserAddressRepository) Save(userAddress models.UserAddress) (*mod
 	tx := r.db.Begin()
 
 	if userAddress.IsDefault {
-		if err := r.db.Model(&models.UserAddress{}).Where("user_id = ?", userAddress.UserID).Update("is_default", false).Error; err != nil {
+		if err := tx.Model(&models.UserAddress{}).Where("user_id = ?", userAddress.UserID).Update("is_default", false).Error; err != nil {
 			logger.Error("Error while updating user addresses " + err.Error())
 			tx.Rollback()
 			return nil, errs.NewUnexpectedError("Error while updating user addresses " + err.Error())
 		}
 	}
-	if err := r.db.Create(&userAddress).Error; err != nil {
+	if err := tx.Create(&userAddress).Error; err != nil {
 		logger.Error("Error while saving user address " + err.Error())
 		tx.Rollback()
 		return nil, errs.NewUnexpectedError("Error while saving user address " + err.Error())
@@ -77,13 +77,13 @@ func (r DefaultUserAddressRepository) Update(userAddress models.UserAddress) (*m
 	tx := r.db.Begin()
 
 	if userAddress.IsDefault {
-		if err := r.db.Model(&models.UserAddress{}).Where("user_id = ?", userAddress.UserID).Update("is_default", false).Error; err != nil {
+		if err := tx.Model(&models.UserAddress{}).Where("user_id = ?", userAddress.UserID).Update("is_default", false).Error; err != nil {
 			logger.Error("Error while updating user addresses " + err.Error())
 			tx.Rollback()
 			return nil, errs.NewUnexpectedError("Error while updating user addresses " + err.Error())
 		}
 	}
-	if err := r.db.Save(&userAddress).Error; err != nil {
+	if err := tx.Save(&userAddress).Error; err != nil {
 		logger.Error("Error while updating user address " + err.Error())
 		tx.Rollback()
 		return nil, errs.NewUnexpectedError("Error while updating user address " + err.Error())
@@ -103,13 +103,13 @@ func (r DefaultUserAddressRepository) Delete(userAddressID uuid.UUID) *errs.AppE
 
 	var userAddress models.UserAddress
 
-	if err := r.db.Where("id = ?", userAddressID).First(&userAddress).Error; err != nil {
+	if err := tx.Where("id = ?", userAddressID).First(&userAddress).Error; err != nil {
 		logger.Error("Error while finding user address " + err.Error())
 		tx.Rollback()
 		return errs.NewUnexpectedError("Error while finding user address " + err.Error())
 	}
 
-	if err := r.db.Model(&models.UserAddress{}).Where("id = ?", userAddressID).Update("status", "inactive").Error; err != nil {
+	if err := tx.Model(&models.UserAddress{}).Where("id = ?", userAddressID).Update("status", "inactive").Error; err != nil {
 		logger.Error("Error while deleting user address " + err.Error())
 		tx.Rollback()
 		return errs.NewUnexpectedError("Error while deleting user address " + err.Error())
@@ -117,7 +117,7 @@ func (r DefaultUserAddressRepository) Delete(userAddressID uuid.UUID) *errs.AppE
 
 	// update user first address to default if user has no address
 	if userAddress.IsDefault {
-		if err := r.db.Model(&models.UserAddress{}).Where("user_id = ?", userAddress.UserID).Update("is_default", true).Error; err != nil {
+		if err := tx.Model(&models.UserAddress{}).Where("user_id = ?", userAddress.UserID).Update("is_default", true).Error; err != nil {
 			logger.Error("Error while updating user addresses " + err.Error())
 			tx.Rollback()
 			return errs.NewUnexpectedError("Error while updating user addresses " + err.Error())

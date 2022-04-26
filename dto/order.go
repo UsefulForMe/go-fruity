@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
 	"github.com/google/uuid"
 )
@@ -32,5 +33,35 @@ type GetOrderByIDRequest struct {
 }
 
 type GetOrderByIDResponse struct {
+	Order models.Order `json:"order"`
+}
+
+type ChangeOrderStatusRequest struct {
+	OrderID uuid.UUID `json:"order_id"`
+	Status  string    `json:"status"`
+	Note    string    `json:"note"`
+	UserID  uuid.UUID `json:"user_id"`
+}
+
+const (
+	OrderStatusProccessing = "processing"
+	OrderStatusShipping    = "shipping"
+	OrderStatusDelivered   = "delivered"
+	OrderStatusCancelled   = "cancelled"
+)
+
+func (r ChangeOrderStatusRequest) IsValidStatus() *errs.AppError {
+	isValid := r.Status == OrderStatusProccessing ||
+		r.Status == OrderStatusShipping ||
+		r.Status == OrderStatusDelivered ||
+		r.Status == OrderStatusCancelled
+	if !isValid {
+		return errs.NewBadRequestError("invalid order status")
+	}
+	return nil
+
+}
+
+type ChangeOrderStatusResponse struct {
 	Order models.Order `json:"order"`
 }

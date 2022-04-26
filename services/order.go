@@ -13,6 +13,8 @@ type OrderService interface {
 	CreateOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, *errs.AppError)
 	MyOrders(req dto.MyOrdersRequest) (*dto.MyOrdersResponse, *errs.AppError)
 	GetOrderByID(req dto.GetOrderByIDRequest) (*dto.GetOrderByIDResponse, *errs.AppError)
+
+	ChangeOrderStatus(req dto.ChangeOrderStatusRequest) (*dto.ChangeOrderStatusResponse, *errs.AppError)
 }
 
 type DefaultOrderService struct {
@@ -50,10 +52,14 @@ func (s DefaultOrderService) MyOrders(req dto.MyOrdersRequest) (*dto.MyOrdersRes
 		return nil, err
 	}
 	filterOrders := []models.Order{}
-	for _, order := range orders {
-		if order.Status == req.Status {
-			filterOrders = append(filterOrders, order)
+	if req.Status != "" {
+		for _, order := range orders {
+			if order.Status == req.Status {
+				filterOrders = append(filterOrders, order)
+			}
 		}
+	} else {
+		filterOrders = orders
 	}
 
 	return &dto.MyOrdersResponse{
@@ -66,5 +72,19 @@ func (s DefaultOrderService) GetOrderByID(req dto.GetOrderByIDRequest) (*dto.Get
 		return nil, err
 	}
 	return &dto.GetOrderByIDResponse{
+		Order: *order}, nil
+}
+
+func (s DefaultOrderService) ChangeOrderStatus(req dto.ChangeOrderStatusRequest) (*dto.ChangeOrderStatusResponse, *errs.AppError) {
+	order, err := s.orderRepo.ChangeOrderStatus(
+		req.OrderID,
+		req.Status,
+		req.Note,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.ChangeOrderStatusResponse{
 		Order: *order}, nil
 }
