@@ -25,7 +25,7 @@ type Order struct {
 	UserAddressID uuid.UUID   `json:"user_address_id" `
 	UserAddress   UserAddress `json:"user_address"`
 	Note          string      `json:"note"`
-	TotalPrice    float32     `json:"total_price,omitempty"  gorm:"<-:false;->;-:migration" `
+	TotalPrice    float32     `json:"total_price"  gorm:"<-:false;->;-:migration" `
 }
 
 func (o *Order) BeforeCreate(db *gorm.DB) (err error) {
