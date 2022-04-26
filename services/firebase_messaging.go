@@ -38,6 +38,7 @@ func (s DefaultFirebaseMessageService) SendNotification(req dto.SendNotification
 			Body:  req.Body,
 		},
 		Token: req.Token,
+		Data:  req.Data,
 	}
 
 	res, err := s.client.Send(context.Background(), &msg)

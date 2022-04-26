@@ -38,12 +38,16 @@ func (h OrderHandler) CreateOrder() gin.HandlerFunc {
 		if err != nil {
 			WriteResponseError(c, err)
 		} else {
-			title := "🛒 Tạo đơn hàng thành công"
-			body := fmt.Sprintf("Đơn hàng %s của bạn đã được tạo thành công !", order.Order.TextID)
+			title := getTitle(order.Order.Status)
+			body := getBody(order.Order)
 			go h.firebaseFCM.SendNotification(dto.SendNotificationRequest{
 				Title: title,
 				Body:  body,
 				Token: user.FCMToken,
+				Data: map[string]string{
+					"id":     order.Order.ID.String(),
+					"action": "/view_order",
+				},
 			})
 
 			WriteResponse(c, http.StatusCreated, order)
@@ -106,7 +110,45 @@ func (h OrderHandler) ChangeOrderStatus() gin.HandlerFunc {
 		if err != nil {
 			WriteResponseError(c, err)
 		} else {
+
+			title := getTitle(res.Order.Status)
+			body := getBody(res.Order)
+			go h.firebaseFCM.SendNotification(dto.SendNotificationRequest{
+				Title: title,
+				Body:  body,
+				Token: user.FCMToken,
+				Data: map[string]string{
+					"id":     res.Order.ID.String(),
+					"action": "/view_order",
+				},
+			})
 			WriteResponse(c, http.StatusOK, res)
 		}
+	}
+}
+
+func getTitle(status string) string {
+	switch status {
+	case dto.OrderStatusShipping:
+		return "🛒 Bạn có đơn hàng đang chờ trên đường giao"
+	case dto.OrderStatusDelivered:
+		return "🛒 Đơn hàng đã được giao"
+	case dto.OrderStatusCancelled:
+		return "🛒 Đơn hàng đã bị hủy"
+	default:
+		return "🛒 Tạo đơn hàng thành công"
+	}
+}
+
+func getBody(order models.Order) string {
+	switch order.Status {
+	case dto.OrderStatusShipping:
+		return fmt.Sprintf("Đơn hàng %s đang trong quá trình vận chuyển và dự kiến được giao vào %s  ", order.TextID, order.ReceivedAt)
+	case dto.OrderStatusDelivered:
+		return fmt.Sprintf("Đơn hàng %s đã được giao vào %s ", order.TextID, order.ReceivedAt.Format("02/01/2006 15:04:05"))
+	case dto.OrderStatusCancelled:
+		return fmt.Sprintf("Đơn hàng %s đã bị hủy ", order.TextID)
+	default:
+		return fmt.Sprintf("Đơn hàng %s của bạn đã được tạo thành công !", order.TextID)
 	}
 }
