@@ -57,7 +57,7 @@ func (h OrderHandler) MyOrders() gin.HandlerFunc {
 		user := c.MustGet("user").(models.User)
 		req := dto.MyOrdersRequest{
 			UserID: user.ID,
-			Status: c.DefaultQuery("status", "processing"),
+			Status: c.DefaultQuery("status", ""),
 		}
 
 		res, err := h.orderService.MyOrders(req)
