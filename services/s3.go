@@ -37,7 +37,7 @@ func uploadToS3(s S3Service, file multipart.FileHeader) (*dto.UploadFileResponse
 	contentType := file.Header.Get("Content-Type")
 	unixTime := time.Now().Unix()
 
-	key := fileName + "_" + strconv.FormatInt(unixTime, 10)
+	key := strconv.FormatInt(unixTime, 10) + "_" + fileName
 
 	inputFile := s3.PutObjectInput{
 		ACL:         aws.String(s3.ObjectCannedACLPublicRead),
