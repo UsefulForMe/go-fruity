@@ -8,4 +8,5 @@ type User struct {
 	Addresses   []UserAddress `json:"addresses,omitempty" gorm:"foreignKey:UserID"`
 	Payments    []Payment     `json:"payments,omitempty" gorm:"foreignKey:UserID"`
 	FCMToken    string        `json:"fcm_token" gorm:"type:varchar(255)"`
+	Avatar      string        `json:"avatar" gorm:"type:varchar(500)"`
 }

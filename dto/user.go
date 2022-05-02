@@ -26,3 +26,14 @@ type UpdateFCMTokenRequest struct {
 type UpdateFCMTokenResponse struct {
 	Success bool `json:"success"`
 }
+
+type UpdateUserInforRequest struct {
+	UserID   uuid.UUID `json:"user_id"`
+	FullName string    `json:"full_name"`
+	Avatar   string    `json:"avatar"`
+	Email    string    `json:"email"`
+}
+
+type UpdateUserInforResponse struct {
+	User models.User `json:"user"`
+}

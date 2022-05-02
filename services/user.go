@@ -17,10 +17,17 @@ type UserService interface {
 	Login(user dto.LoginUserRequest) (*dto.LoginUserResponse, *errs.AppError)
 
 	UpdateFCMToken(user dto.UpdateFCMTokenRequest) (*dto.UpdateFCMTokenResponse, *errs.AppError)
+	UpdateInfor(r dto.UpdateUserInforRequest) (*dto.UpdateUserInforResponse, *errs.AppError)
 }
 
 type DefaultUserService struct {
 	repo repository.UserRepository
+}
+
+func NewUserService(repo repository.UserRepository) DefaultUserService {
+	return DefaultUserService{
+		repo: repo,
+	}
 }
 
 func (s DefaultUserService) Create(r dto.CreateUserRequest) (*dto.CreateUserResponse, *errs.AppError) {
@@ -107,8 +114,24 @@ func (s DefaultUserService) UpdateFCMToken(r dto.UpdateFCMTokenRequest) (*dto.Up
 	return &res, nil
 }
 
-func NewUserService(repo repository.UserRepository) DefaultUserService {
-	return DefaultUserService{
-		repo: repo,
+func (s DefaultUserService) UpdateInfor(r dto.UpdateUserInforRequest) (*dto.UpdateUserInforResponse, *errs.AppError) {
+
+	user, err := s.repo.FindById(r.UserID)
+	if err != nil {
+		return nil, err
 	}
+
+	user.FullName = r.FullName
+	user.Avatar = r.Avatar
+	user.Email = r.Email
+
+	err = s.repo.Update(user)
+	if err != nil {
+		return nil, err
+	}
+
+	res := dto.UpdateUserInforResponse{
+		User: *user,
+	}
+	return &res, nil
 }

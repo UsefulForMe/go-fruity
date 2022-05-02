@@ -14,6 +14,12 @@ type UserHandler struct {
 	userService services.UserService
 }
 
+func NewUserHandler(userService services.UserService) UserHandler {
+	return UserHandler{
+		userService: userService,
+	}
+}
+
 func (h UserHandler) Create() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -68,8 +74,23 @@ func (h UserHandler) UpdateFCMToken() gin.HandlerFunc {
 	}
 }
 
-func NewUserHandler(userService services.UserService) UserHandler {
-	return UserHandler{
-		userService: userService,
+func (h UserHandler) UpdateInfor() gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+
+		var req dto.UpdateUserInforRequest
+		if err := c.BindJSON(&req); err != nil {
+			WriteResponseError(c, errs.NewBadRequestError(err.Error()))
+			return
+		}
+		user := c.MustGet("user").(models.User)
+		req.UserID = user.ID
+		res, err := h.userService.UpdateInfor(req)
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
+
 	}
 }

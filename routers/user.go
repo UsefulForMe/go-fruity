@@ -8,13 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRouter(userRouer *gin.RouterGroup) {
+func UserRouter(userRouter *gin.RouterGroup) {
 	r := repository.NewUserRepository(config.DB)
 	h := handlers.NewUserHandler(services.NewUserService(r))
 
-	userRouer.GET("", h.GetAll())
-	userRouer.POST("", h.Create())
+	userRouter.GET("", h.GetAll())
+	userRouter.POST("", h.Create())
 
-	userRouer.PUT("/update-my-fcm-token", h.UpdateFCMToken())
+	userRouter.PUT("/update-my-fcm-token", h.UpdateFCMToken())
+	userRouter.PUT("/update-my-profile", h.UpdateInfor())
 
 }

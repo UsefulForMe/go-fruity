@@ -94,3 +94,18 @@ func (mr *MockUserServiceMockRecorder) UpdateFCMToken(arg0 interface{}) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFCMToken", reflect.TypeOf((*MockUserService)(nil).UpdateFCMToken), arg0)
 }
+
+// UpdateInfor mocks base method.
+func (m *MockUserService) UpdateInfor(arg0 dto.UpdateUserInforRequest) (*dto.UpdateUserInforResponse, *errs.AppError) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateInfor", arg0)
+	ret0, _ := ret[0].(*dto.UpdateUserInforResponse)
+	ret1, _ := ret[1].(*errs.AppError)
+	return ret0, ret1
+}
+
+// UpdateInfor indicates an expected call of UpdateInfor.
+func (mr *MockUserServiceMockRecorder) UpdateInfor(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateInfor", reflect.TypeOf((*MockUserService)(nil).UpdateInfor), arg0)
+}
