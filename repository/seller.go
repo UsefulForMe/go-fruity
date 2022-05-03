@@ -13,6 +13,8 @@ type SellerRepository interface {
 	FindAll() ([]models.Seller, *errs.AppError)
 	FindByID(id uuid.UUID) (*models.Seller, *errs.AppError)
 	FindByIDs(ids []uuid.UUID) ([]models.Seller, *errs.AppError)
+
+	ProductBySeller(sellerID uuid.UUID) ([]models.Product, *errs.AppError)
 }
 
 type DefaultSellerRepository struct {
@@ -59,4 +61,13 @@ func (r DefaultSellerRepository) FindByIDs(ids []uuid.UUID) ([]models.Seller, *e
 		return nil, errs.NewUnexpectedError("Unexpected error when find seller " + err.Error())
 	}
 	return sellers, nil
+}
+
+func (r DefaultSellerRepository) ProductBySeller(sellerID uuid.UUID) ([]models.Product, *errs.AppError) {
+	var products []models.Product
+	if err := r.db.Where("seller_id = ?", sellerID).Find(&products).Error; err != nil {
+		logger.Error("Error when find product by seller " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected error when find product by seller " + err.Error())
+	}
+	return products, nil
 }

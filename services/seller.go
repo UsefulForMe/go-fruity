@@ -11,6 +11,8 @@ import (
 type SellerService interface {
 	CreateSeller(req dto.CreateSellerRequest) (*dto.CreateSellerResponse, *errs.AppError)
 	GetAllSeller(req dto.GetAllSellerRequest) (*dto.GetAllSellerResponse, *errs.AppError)
+	GetSellerByID(req dto.GetSellerByIDRequest) (*dto.GetSellerByIDResponse, *errs.AppError)
+	GetProductsBySellerID(req dto.GetProductsBySellerIDRequest) (*dto.GetProductsBySellerIDResponse, *errs.AppError)
 }
 
 type DefaultSellerService struct {
@@ -72,5 +74,29 @@ func (s DefaultSellerService) GetAllSeller(req dto.GetAllSellerRequest) (*dto.Ge
 
 	return &dto.GetAllSellerResponse{
 		Sellers: sellers,
+	}, nil
+}
+
+func (s DefaultSellerService) GetSellerByID(req dto.GetSellerByIDRequest) (*dto.GetSellerByIDResponse, *errs.AppError) {
+	seller, err := s.repo.FindByID(req.ID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.GetSellerByIDResponse{
+		Seller: *seller,
+	}, nil
+}
+
+func (s DefaultSellerService) GetProductsBySellerID(req dto.GetProductsBySellerIDRequest) (*dto.GetProductsBySellerIDResponse, *errs.AppError) {
+	products, err := s.repo.ProductBySeller(req.SellerID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.GetProductsBySellerIDResponse{
+		Products: products,
 	}, nil
 }

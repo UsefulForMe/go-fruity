@@ -1,6 +1,9 @@
 package dto
 
-import "github.com/UsefulForMe/go-ecommerce/models"
+import (
+	"github.com/UsefulForMe/go-ecommerce/models"
+	"github.com/google/uuid"
+)
 
 type CreateSellerRequest struct {
 	Name          string               `json:"name"`
@@ -27,4 +30,20 @@ type GetAllSellerRequest struct {
 
 type GetAllSellerResponse struct {
 	Sellers []models.Seller `json:"sellers"`
+}
+
+type GetSellerByIDRequest struct {
+	ID uuid.UUID `json:"id"`
+}
+
+type GetSellerByIDResponse struct {
+	Seller models.Seller `json:"seller"`
+}
+
+type GetProductsBySellerIDRequest struct {
+	SellerID uuid.UUID `json:"seller_id"`
+}
+
+type GetProductsBySellerIDResponse struct {
+	Products []models.Product `json:"products"`
 }

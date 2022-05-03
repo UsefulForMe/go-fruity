@@ -7,6 +7,7 @@ import (
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/services"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type SellerHandler struct {
@@ -44,6 +45,38 @@ func (h SellerHandler) GetAllSellers() gin.HandlerFunc {
 		req.IDs = ids
 
 		res, err := h.sellerService.GetAllSeller(req)
+
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
+	}
+}
+
+func (h SellerHandler) GetSellerByID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.GetSellerByIDRequest
+		id := c.Param("id")
+		req.ID = uuid.MustParse(id)
+
+		res, err := h.sellerService.GetSellerByID(req)
+
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
+	}
+}
+
+func (h SellerHandler) GetProductsBySellerID() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.GetProductsBySellerIDRequest
+		id := c.Param("id")
+		req.SellerID = uuid.MustParse(id)
+
+		res, err := h.sellerService.GetProductsBySellerID(req)
 
 		if err != nil {
 			WriteResponseError(c, err)
