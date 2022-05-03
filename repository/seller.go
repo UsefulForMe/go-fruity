@@ -65,7 +65,7 @@ func (r DefaultSellerRepository) FindByIDs(ids []uuid.UUID) ([]models.Seller, *e
 
 func (r DefaultSellerRepository) ProductBySeller(sellerID uuid.UUID) ([]models.Product, *errs.AppError) {
 	var products []models.Product
-	if err := r.db.Where("seller_id = ?", sellerID).Find(&products).Error; err != nil {
+	if err := r.db.Where("seller_id = ?", sellerID).Preload("Seller").Find(&products).Error; err != nil {
 		logger.Error("Error when find product by seller " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find product by seller " + err.Error())
 	}
