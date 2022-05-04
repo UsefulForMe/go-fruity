@@ -69,7 +69,7 @@ func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Orde
 		for _, orderItem := range order.OrderItems {
 			totalPrice += float32(orderItem.Product.Price) * float32(orderItem.Quantity)
 		}
-		order.TotalPrice = totalPrice
+		order.TotalPrice = totalPrice + float32(order.ShippingFee)
 	}
 
 	return orders, nil
@@ -86,7 +86,7 @@ func (repo DefaultOrderRepository) FindByID(orderID uuid.UUID) (*models.Order, *
 	for _, item := range order.OrderItems {
 		totalPrice += float32(item.Product.Price) * float32(item.Quantity)
 	}
-	order.TotalPrice = totalPrice
+	order.TotalPrice = totalPrice + float32(order.ShippingFee)
 	return &order, nil
 }
 

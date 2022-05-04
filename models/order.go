@@ -19,13 +19,15 @@ type Order struct {
 	OrderItems []OrderItem `json:"order_items" gorm:"foreignKey:OrderID"`
 	PaymentID  uuid.UUID   `json:"payment_id"`
 
-	Payment       Payment     `json:"payment"`
-	Tracks        []Track     `json:"tracks" gorm:"foreignKey:OrderID"`
-	ReceivedAt    time.Time   `json:"received_at"`
-	UserAddressID uuid.UUID   `json:"user_address_id" `
-	UserAddress   UserAddress `json:"user_address"`
-	Note          string      `json:"note"`
-	TotalPrice    float32     `json:"total_price"  gorm:"<-:false;->;-:migration" `
+	Payment          Payment     `json:"payment"`
+	Tracks           []Track     `json:"tracks" gorm:"foreignKey:OrderID"`
+	ReceivedAt       time.Time   `json:"received_at"`
+	UserAddressID    uuid.UUID   `json:"user_address_id" `
+	UserAddress      UserAddress `json:"user_address"`
+	Note             string      `json:"note"`
+	TotalPrice       float32     `json:"total_price"  gorm:"<-:false;->;-:migration" `
+	ShippingFee      float32     `json:"shipping_fee" gorm:"default:0"`
+	ShippingDistance float32     `json:"shipping_distance" gorm:"default:0"`
 }
 
 func (o *Order) BeforeCreate(db *gorm.DB) (err error) {

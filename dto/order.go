@@ -7,13 +7,15 @@ import (
 )
 
 type CreateOrderRequest struct {
-	UserID        uuid.UUID          `json:"user_id"`
-	SellerID      uuid.UUID          `json:"seller_id"`
-	PaymentID     uuid.UUID          `json:"payment_id"`
-	OrderItems    []models.OrderItem `json:"order_items"`
-	ReceivedAt    LocalTime          `json:"received_at" `
-	UserAddressID uuid.UUID          `json:"user_address_id"`
-	Note          string             `json:"note"`
+	UserID           uuid.UUID          `json:"user_id"`
+	SellerID         uuid.UUID          `json:"seller_id"`
+	PaymentID        uuid.UUID          `json:"payment_id"`
+	OrderItems       []models.OrderItem `json:"order_items"`
+	ReceivedAt       LocalTime          `json:"received_at" `
+	UserAddressID    uuid.UUID          `json:"user_address_id"`
+	ShippingFee      float32            `json:"shipping_fee"`
+	ShippingDistance float32            `json:"shipping_distance"`
+	Note             string             `json:"note"`
 }
 
 type CreateOrderResponse struct {
