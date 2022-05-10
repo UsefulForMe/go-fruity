@@ -11,11 +11,18 @@ import (
 func UserRouter(userRouter *gin.RouterGroup) {
 	r := repository.NewUserRepository(config.DB)
 	h := handlers.NewUserHandler(services.NewUserService(r))
-
-	userRouter.GET("", h.GetAll())
 	userRouter.POST("", h.Create())
 
 	userRouter.PUT("/update-my-fcm-token", h.UpdateFCMToken())
 	userRouter.PUT("/update-my-profile", h.UpdateInfor())
 
+}
+
+func UserRouterCMS(userRouter *gin.RouterGroup) {
+	r := repository.NewUserRepository(config.DB)
+	h := handlers.NewUserHandler(services.NewUserService(r))
+
+	userRouter.GET("", h.GetAll())
+	userRouter.PUT("/update-my-fcm-token", h.UpdateFCMToken())
+	userRouter.PUT("/update-my-profile", h.UpdateInfor())
 }

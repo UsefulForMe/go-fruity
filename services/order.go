@@ -10,6 +10,7 @@ import (
 )
 
 type OrderService interface {
+	GetAllOrders(req dto.GetAllOrdersRequest) (*dto.GetAllOrdersResponse, *errs.AppError)
 	CreateOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, *errs.AppError)
 	MyOrders(req dto.MyOrdersRequest) (*dto.MyOrdersResponse, *errs.AppError)
 	GetOrderByID(req dto.GetOrderByIDRequest) (*dto.GetOrderByIDResponse, *errs.AppError)
@@ -25,6 +26,16 @@ func NewOrderService(orderRepo repository.OrderRepository) DefaultOrderService {
 	return DefaultOrderService{
 		orderRepo: orderRepo,
 	}
+}
+
+func (s DefaultOrderService) GetAllOrders(req dto.GetAllOrdersRequest) (*dto.GetAllOrdersResponse, *errs.AppError) {
+	orders, err := s.orderRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	return &dto.GetAllOrdersResponse{
+		Orders: orders}, nil
+
 }
 
 func (s DefaultOrderService) CreateOrder(req dto.CreateOrderRequest) (*dto.CreateOrderResponse, *errs.AppError) {

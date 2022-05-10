@@ -12,6 +12,13 @@ func SellerRoute(route *gin.RouterGroup) {
 
 	h := handlers.NewSellerHandler(services.NewSellerService(repository.NewSellerRepository(config.DB)))
 
+	route.GET("", h.GetAllSellers())
+	route.GET("/:id", h.GetSellerByID())
+	route.GET("/:id/products", h.GetProductsBySellerID())
+}
+
+func SellerRouteCMS(route *gin.RouterGroup) {
+	h := handlers.NewSellerHandler(services.NewSellerService(repository.NewSellerRepository(config.DB)))
 	route.GET("", h.GetAllSellers()).POST("", h.CreateSeller())
 	route.GET("/:id", h.GetSellerByID())
 	route.GET("/:id/products", h.GetProductsBySellerID())

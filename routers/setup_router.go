@@ -15,7 +15,7 @@ func SetupRoute(app *gin.Engine) {
 			"message": "pong",
 		})
 	})
-	v1 := app.Group("/v1")
+	v1 := app.Group("/api/v1")
 
 	AuthRouter(v1)
 
@@ -32,4 +32,13 @@ func SetupRoute(app *gin.Engine) {
 		UserAddressRoute(v1.Group("/user-addresses"))
 	}
 
+	// setup for cms
+	cmsV1 := app.Group("/cms/v1")
+	CategoryRouteCMS(cmsV1.Group("/categories"))
+	ProductRouteCMS(cmsV1.Group("/products"))
+	OrderRouteCMS(cmsV1.Group("/orders"))
+	SellerRouteCMS(cmsV1.Group("/sellers"))
+
+	UserRouterCMS(cmsV1.Group("/users"))
+	UploadRouter(cmsV1.Group("/upload"))
 }
