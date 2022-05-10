@@ -6,6 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
+type GetAllOrdersRequest struct {
+}
+type GetAllOrdersResponse struct {
+	Orders []models.Order `json:"orders"`
+}
+
 type CreateOrderRequest struct {
 	UserID           uuid.UUID          `json:"user_id"`
 	SellerID         uuid.UUID          `json:"seller_id"`

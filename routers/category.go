@@ -12,8 +12,16 @@ func CategoryRoute(route *gin.RouterGroup) {
 
 	h := handlers.NewCategoryHandler(services.NewCategoryService(repository.NewCategoryRepository(config.DB)))
 
-	route.GET("", h.GetAllCategories()).POST("", h.CreateCategory())
+	route.GET("", h.GetAllCategories())
 
 	route.GET("/:id/products", h.GetProductsByCategoryID())
 
+}
+
+func CategoryRouteCMS(route *gin.RouterGroup) {
+	h := handlers.NewCategoryHandler(services.NewCategoryService(repository.NewCategoryRepository(config.DB)))
+
+	route.GET("", h.GetAllCategories()).POST("", h.CreateCategory())
+
+	route.GET("/:id/products", h.GetProductsByCategoryID())
 }

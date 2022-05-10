@@ -12,6 +12,8 @@ import (
 
 type OrderRepository interface {
 	Save(order models.Order) (*models.Order, *errs.AppError)
+	FindAll() ([]models.Order, *errs.AppError)
+
 	FindByUserID(userID uuid.UUID) ([]models.Order, *errs.AppError)
 
 	FindByID(orderID uuid.UUID) (*models.Order, *errs.AppError)
@@ -53,6 +55,27 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 	}
 
 	return &order, nil
+}
+
+func (repo DefaultOrderRepository) FindAll() ([]models.Order, *errs.AppError) {
+	var orders []models.Order
+	if err := repo.db.Model(&orders).Order("created_at DESC").Preload("Seller").Preload("OrderItems.Product").Preload("OrderItems.Product.Seller").Preload("Payment").Preload("User").Preload("Tracks").Preload("UserAddress").Find(&orders).Error; err != nil {
+		logger.Error("Error while finding all orders " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected error while finding all orders " + err.Error())
+	}
+
+	// get total price
+	for index := range orders {
+		order := &orders[index]
+		var totalPrice float32
+		for _, orderItem := range order.OrderItems {
+			totalPrice += float32(orderItem.Product.Price) * float32(orderItem.Quantity)
+		}
+		order.TotalPrice = totalPrice + float32(order.ShippingFee)
+	}
+
+	return orders, nil
+
 }
 
 func (repo DefaultOrderRepository) FindByUserID(userID uuid.UUID) ([]models.Order, *errs.AppError) {

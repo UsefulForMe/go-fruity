@@ -25,6 +25,19 @@ func NewOrderHandler(orderService services.OrderService, firebaseFCM services.Fi
 	}
 }
 
+func (h OrderHandler) GetAllOrders() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req dto.GetAllOrdersRequest
+
+		res, err := h.orderService.GetAllOrders(req)
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
+	}
+}
+
 func (h OrderHandler) CreateOrder() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req dto.CreateOrderRequest

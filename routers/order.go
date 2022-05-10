@@ -17,3 +17,11 @@ func OrderRoute(route *gin.RouterGroup) {
 	route.PUT("/:order_id/change-status", h.ChangeOrderStatus())
 
 }
+
+func OrderRouteCMS(route *gin.RouterGroup) {
+	firebaseFCM := services.NewFirebaseMessageService(config.FirebaseApp)
+	h := handlers.NewOrderHandler(services.NewOrderService(repository.NewOrderRepository(config.DB)), firebaseFCM)
+	route.GET("", h.GetAllOrders())
+	route.GET("/:order_id", h.GetOrderByID())
+	route.PUT("/:order_id/change-status", h.ChangeOrderStatus())
+}
