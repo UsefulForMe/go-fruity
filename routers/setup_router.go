@@ -38,7 +38,9 @@ func SetupRoute(app *gin.Engine) {
 	ProductRouteCMS(cmsV1.Group("/products"))
 	OrderRouteCMS(cmsV1.Group("/orders"))
 	SellerRouteCMS(cmsV1.Group("/sellers"))
+	StockRouteCMS(cmsV1.Group("/stocks"))
 
 	UserRouterCMS(cmsV1.Group("/users"))
 	UploadRouter(cmsV1.Group("/upload"))
+
 }

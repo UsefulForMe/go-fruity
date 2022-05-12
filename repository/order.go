@@ -3,6 +3,7 @@ package repository
 import (
 	"time"
 
+	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/logger"
 	"github.com/UsefulForMe/go-ecommerce/models"
@@ -47,6 +48,38 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 		logger.Error("Error while creating an track " + err.Error())
 		tx.Rollback()
 		return nil, errs.NewUnexpectedError("Unexpected error while creating an track " + err.Error())
+	}
+
+	stocks := []models.Stock{}
+	productIDs := []uuid.UUID{}
+	for _, item := range order.OrderItems {
+		productIDs = append(productIDs, item.ProductID)
+	}
+
+	if err := tx.Model(&stocks).Where("product_id in  ?", productIDs).Find(&stocks).Error; err != nil {
+		logger.Error("Error while finding stocks " + err.Error())
+		tx.Rollback()
+		return nil, errs.NewUnexpectedError("Unexpected error while finding stocks " + err.Error())
+	}
+
+	stockMap := map[uuid.UUID]models.Stock{}
+	for _, stock := range stocks {
+		stockMap[stock.ProductID] = stock
+	}
+
+	for _, item := range order.OrderItems {
+		stock := stockMap[item.ProductID]
+		stock.Quantity = stock.Quantity - item.Quantity
+		if stock.Quantity < 0 {
+			logger.Error("Stock quantity is less than 0")
+			tx.Rollback()
+			return nil, errs.NewUnexpectedError("Unexpected error while updating stock ")
+		}
+		if err := tx.Save(&stock).Error; err != nil {
+			logger.Error("Error while updating stock " + err.Error())
+			tx.Rollback()
+			return nil, errs.NewUnexpectedError("Unexpected error while updating stock " + err.Error())
+		}
 	}
 
 	if err := tx.Commit().Error; err != nil {
@@ -143,6 +176,42 @@ func (repo DefaultOrderRepository) ChangeOrderStatus(orderID uuid.UUID, status s
 		logger.Error("Error while updating order status " + err.Error())
 		tx.Rollback()
 		return nil, errs.NewUnexpectedError("Unexpected error while updating order status " + err.Error())
+	}
+
+	if status == dto.OrderStatusCancelled {
+
+		stocks := []models.Stock{}
+		productIDs := []uuid.UUID{}
+
+		for _, item := range order.OrderItems {
+			productIDs = append(productIDs, item.ProductID)
+		}
+		if err := tx.Model(&stocks).Where("product_id IN (?)", productIDs).Find(&stocks).Error; err != nil {
+			logger.Error("Error while finding stocks by product ids " + err.Error())
+			tx.Rollback()
+			return nil, errs.NewUnexpectedError("Unexpected error while finding stocks by product ids " + err.Error())
+		}
+		stockMap := map[uuid.UUID]*models.Stock{}
+		for _, stock := range stocks {
+			stockMap[stock.ProductID] = &stock
+		}
+
+		for _, item := range order.OrderItems {
+			stock, ok := stockMap[item.ProductID]
+			if !ok {
+				logger.Error("Error while finding stock by product id " + item.ProductID.String())
+				tx.Rollback()
+				return nil, errs.NewUnexpectedError("Unexpected error while finding stock by product id " + item.ProductID.String())
+			}
+
+			stock.Quantity += item.Quantity
+			if err := tx.Save(stock).Error; err != nil {
+				logger.Error("Error while saving stock " + err.Error())
+				tx.Rollback()
+				return nil, errs.NewUnexpectedError("Unexpected error while saving stock " + err.Error())
+			}
+		}
+
 	}
 
 	if err := tx.Commit().Error; err != nil {
