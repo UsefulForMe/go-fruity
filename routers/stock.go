@@ -8,6 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func StockRoute(route *gin.RouterGroup) {
+	h := handlers.NewStockHandler(services.NewStockService(repository.NewStockRepository(config.DB)))
+	route.GET("/products/:product_id", h.GetStockByProductId())
+}
+
 func StockRouteCMS(route *gin.RouterGroup) {
 
 	h := handlers.NewStockHandler(services.NewStockService(repository.NewStockRepository(config.DB)))
