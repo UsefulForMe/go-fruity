@@ -34,6 +34,7 @@ func getDatabase() *gorm.DB {
 		&models.Seller{},
 		&models.Product{},
 		&models.Stock{},
+		&models.StockReport{},
 		&models.Order{},
 		&models.OrderItem{},
 		&models.Track{})

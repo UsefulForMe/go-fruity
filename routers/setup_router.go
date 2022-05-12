@@ -40,7 +40,7 @@ func SetupRoute(app *gin.Engine) {
 	OrderRouteCMS(cmsV1.Group("/orders"))
 	SellerRouteCMS(cmsV1.Group("/sellers"))
 	StockRouteCMS(cmsV1.Group("/stocks"))
-
+	StockReportRouteCMS(cmsV1.Group("/stocks-reports"))
 	UserRouterCMS(cmsV1.Group("/users"))
 	UploadRouter(cmsV1.Group("/upload"))
 
