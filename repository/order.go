@@ -35,6 +35,10 @@ func NewOrderRepository(db *gorm.DB) DefaultOrderRepository {
 
 func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *errs.AppError) {
 	tx := repo.db.Begin()
+
+	orderItems := order.OrderItems
+	order.OrderItems = nil
+
 	if err := tx.Create(&order).Error; err != nil {
 		logger.Error("Error while creating an order " + err.Error())
 		tx.Rollback()
@@ -51,9 +55,19 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 		return nil, errs.NewUnexpectedError("Unexpected error while creating an track " + err.Error())
 	}
 
+	for _, item := range orderItems {
+		item.OrderID = order.ID
+		item.ID = uuid.New()
+		if err := tx.Create(&item).Error; err != nil {
+			logger.Error("Error while creating an order item " + err.Error())
+			tx.Rollback()
+			return nil, errs.NewUnexpectedError("Unexpected error while creating an order item " + err.Error())
+		}
+	}
+
 	stocks := []models.Stock{}
 	productIDs := []uuid.UUID{}
-	for _, item := range order.OrderItems {
+	for _, item := range orderItems {
 		productIDs = append(productIDs, item.ProductID)
 	}
 
@@ -68,7 +82,7 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 		stockMap[stock.ProductID] = stock
 	}
 
-	for _, item := range order.OrderItems {
+	for _, item := range orderItems {
 		stock := stockMap[item.ProductID]
 		if stock.Quantity < item.Quantity {
 			tx.Rollback()
