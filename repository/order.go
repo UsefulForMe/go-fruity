@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/UsefulForMe/go-ecommerce/dto"
@@ -56,7 +57,7 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 		productIDs = append(productIDs, item.ProductID)
 	}
 
-	if err := tx.Model(&stocks).Where("product_id in  ?", productIDs).Find(&stocks).Error; err != nil {
+	if err := tx.Model(&stocks).Where("product_id in  ?", productIDs).Preload("Product").Find(&stocks).Error; err != nil {
 		logger.Error("Error while finding stocks " + err.Error())
 		tx.Rollback()
 		return nil, errs.NewUnexpectedError("Unexpected error while finding stocks " + err.Error())
@@ -69,12 +70,11 @@ func (repo DefaultOrderRepository) Save(order models.Order) (*models.Order, *err
 
 	for _, item := range order.OrderItems {
 		stock := stockMap[item.ProductID]
-		stock.Quantity = stock.Quantity - item.Quantity
-		if stock.Quantity < 0 {
-			logger.Error("Stock quantity is less than 0")
+		if stock.Quantity < item.Quantity {
 			tx.Rollback()
-			return nil, errs.NewUnexpectedError("Unexpected error while updating stock ")
+			return nil, errs.NewUnexpectedError(stock.Product.Name + " has only " + fmt.Sprint(stock.Quantity) + " left")
 		}
+		stock.Quantity = stock.Quantity - item.Quantity
 		if err := tx.Save(&stock).Error; err != nil {
 			logger.Error("Error while updating stock " + err.Error())
 			tx.Rollback()
@@ -179,11 +179,18 @@ func (repo DefaultOrderRepository) ChangeOrderStatus(orderID uuid.UUID, status s
 	}
 
 	if status == dto.OrderStatusCancelled {
-
 		stocks := []models.Stock{}
 		productIDs := []uuid.UUID{}
 
-		for _, item := range order.OrderItems {
+		var items []models.OrderItem
+
+		if err := tx.Model(&items).Where("order_id = ?", orderID).Find(&items).Error; err != nil {
+			logger.Error("Error while finding order items by order id " + err.Error())
+			tx.Rollback()
+			return nil, errs.NewUnexpectedError("Unexpected error while finding order items by order id " + err.Error())
+		}
+
+		for _, item := range items {
 			productIDs = append(productIDs, item.ProductID)
 		}
 		if err := tx.Model(&stocks).Where("product_id IN (?)", productIDs).Find(&stocks).Error; err != nil {
@@ -196,7 +203,7 @@ func (repo DefaultOrderRepository) ChangeOrderStatus(orderID uuid.UUID, status s
 			stockMap[stock.ProductID] = &stock
 		}
 
-		for _, item := range order.OrderItems {
+		for _, item := range items {
 			stock, ok := stockMap[item.ProductID]
 			if !ok {
 				logger.Error("Error while finding stock by product id " + item.ProductID.String())
