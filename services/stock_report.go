@@ -11,7 +11,7 @@ type StockReportService interface {
 	GetAllStockReport(req dto.GetAllStockReportRequest) (*dto.GetAllStockReportResponse, *errs.AppError)
 	SaveStockReport(req dto.SaveStockReportRequest) (*dto.SaveStockReportResponse, *errs.AppError)
 	UpdateStockReport(req dto.UpdateStockReportRequest) (*dto.UpdateStockReportResponse, *errs.AppError)
-	// GetStockById(req dto.FindStockByIdRequest) (*dto.FindStockByIdResponse, *errs.AppError)
+	GetStockReportById(req dto.FindStockReportByIdRequest) (*dto.FindStockReportByIdResponse, *errs.AppError)
 }
 
 type stockReportService struct {
@@ -35,9 +35,8 @@ func (s stockReportService) GetAllStockReport(req dto.GetAllStockReportRequest) 
 
 func (s stockReportService) SaveStockReport(req dto.SaveStockReportRequest) (*dto.SaveStockReportResponse, *errs.AppError) {
 	stockreport := models.StockReport{
-		ProductID: req.ProductID,
-		Quantity:  req.Quantity,
-		Content:   req.Content,
+		StockItems: req.StockItems,
+		Content:    req.Content,
 	}
 	newStockReport, err := s.stockReportRepository.Save(&stockreport)
 	if err != nil {
@@ -53,7 +52,7 @@ func (s stockReportService) UpdateStockReport(req dto.UpdateStockReportRequest) 
 		return nil, err
 	}
 	stockReport.Content = req.Content
-	stockReport.Quantity = req.Quantity
+	stockReport.StockItems = req.StockItems
 	updatedStockReport, err := s.stockReportRepository.Update(stockReport)
 	if err != nil {
 		return nil, err
@@ -62,20 +61,11 @@ func (s stockReportService) UpdateStockReport(req dto.UpdateStockReportRequest) 
 		StockReport: *updatedStockReport}, nil
 }
 
-// func (s stockReportService) GetStockReportById(req dto.FindStockReportByIdRequest) (*dto.FindStockByIdResponse, *errs.AppError) {
-// 	stockReport, err := s.stockReportRepository.FindByID(req.StockID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &dto.FindStockByIdResponse{
-// 		Stock: *stock}, nil
-// }
-
-// func (s stockService) GetStockByProductId(req dto.FindStockByProductIdRequest) (*dto.FindStockByProductIdResponse, *errs.AppError) {
-// 	stock, err := s.stockRepository.FindByProductID(req.ProductID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &dto.FindStockByProductIdResponse{
-// 		Stock: *stock}, nil
-// }
+func (s stockReportService) GetStockReportById(req dto.FindStockReportByIdRequest) (*dto.FindStockReportByIdResponse, *errs.AppError) {
+	stockReport, err := s.stockReportRepository.FindByID(req.StockReportID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.FindStockReportByIdResponse{
+		StockReport: *stockReport}, nil
+}

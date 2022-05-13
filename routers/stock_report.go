@@ -15,6 +15,6 @@ func StockReportRouteCMS(route *gin.RouterGroup) {
 	route.GET("", h.GetAllStockReport())
 	route.POST("", h.SaveStockReport())
 	route.PUT("/:stock_report_id", h.UpdateStockReport())
-	// route.GET("/:stock_id", h.GetStockById())
+	route.GET("/:stock_report_id", h.GetStockReportById())
 	// route.GET("/products/:product_id", h.GetStockByProductId())
 }

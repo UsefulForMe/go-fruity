@@ -27,7 +27,7 @@ func NewStockReportRepository(db *gorm.DB) DefaultStockReportRepository {
 
 func (r DefaultStockReportRepository) Find() ([]models.StockReport, *errs.AppError) {
 	var stockReports []models.StockReport
-	if err := r.db.Model(&stockReports).Preload("Product").Find(&stockReports).Error; err != nil {
+	if err := r.db.Model(&stockReports).Order("created_at DESC").Preload("StockItems.Product").Find(&stockReports).Error; err != nil {
 		logger.Error("Error when find all stockReports " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find all stockReports " + err.Error())
 	}
@@ -52,7 +52,7 @@ func (r DefaultStockReportRepository) Update(stockReport *models.StockReport) (*
 
 func (r DefaultStockReportRepository) FindByID(id uuid.UUID) (*models.StockReport, *errs.AppError) {
 	var stockReport models.StockReport
-	if err := r.db.Model(&stockReport).Where("id = ?", id).First(&stockReport).Error; err != nil {
+	if err := r.db.Model(&stockReport).Where("id = ?", id).Preload("StockItems.Product").First(&stockReport).Error; err != nil {
 		logger.Error("Error when find stockReport by id " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected error when find stockReport by id " + err.Error())
 	}

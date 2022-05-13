@@ -8,25 +8,32 @@ import (
 type GetAllStockReportRequest struct{}
 
 type GetAllStockReportResponse struct {
-	StockReports []models.StockReport `json:"stockreports"`
+	StockReports []models.StockReport `json:"stock_reports"`
 }
 
 type SaveStockReportRequest struct {
-	ProductID uuid.UUID `json:"product_id"`
-	Content   string    `json:"content"`
-	Quantity  int       `json:"quantity"`
+	Content    string             `json:"content"`
+	StockItems []models.StockItem `json:"stock_items"`
 }
 
 type SaveStockReportResponse struct {
-	StockReport models.StockReport `json:"stockreport"`
+	StockReport models.StockReport `json:"stock_report"`
 }
 
 type UpdateStockReportRequest struct {
-	StockReportID uuid.UUID `json:"stock_report_id"`
-	Quantity      int       `json:"quantity"`
-	Content       string    `json:"content"`
+	StockReportID uuid.UUID          `json:"stock_report_id"`
+	Content       string             `json:"content"`
+	StockItems    []models.StockItem `json:"stock_items"`
 }
 
 type UpdateStockReportResponse struct {
-	StockReport models.StockReport `json:"stockreport"`
+	StockReport models.StockReport `json:"stock_report"`
+}
+
+type FindStockReportByIdRequest struct {
+	StockReportID uuid.UUID `json:"stock_report_id"`
+}
+
+type FindStockReportByIdResponse struct {
+	StockReport models.StockReport `json:"stock_report"`
 }

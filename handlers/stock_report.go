@@ -68,17 +68,17 @@ func (h StockReportHandler) UpdateStockReport() gin.HandlerFunc {
 	}
 }
 
-// func (h StockHandler) GetStockById() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		req := dto.FindStockByIdRequest{}
-// 		stockId := c.Param("stock_id")
-// 		req.StockID = uuid.MustParse(stockId)
-// 		res, err := h.stockService.GetStockById(req)
-// 		if err != nil {
-// 			WriteResponseError(c, err)
-// 		} else {
-// 			WriteResponse(c, http.StatusOK, res)
-// 		}
+func (h StockReportHandler) GetStockReportById() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		req := dto.FindStockReportByIdRequest{}
+		stockId := c.Param("stock_report_id")
+		req.StockReportID = uuid.MustParse(stockId)
+		res, err := h.stockReportService.GetStockReportById(req)
+		if err != nil {
+			WriteResponseError(c, err)
+		} else {
+			WriteResponse(c, http.StatusOK, res)
+		}
 
-// 	}
-// }
+	}
+}
