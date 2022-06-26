@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strconv"
+
 	"github.com/UsefulForMe/go-ecommerce/dto"
 	"github.com/UsefulForMe/go-ecommerce/errs"
 	"github.com/UsefulForMe/go-ecommerce/models"
@@ -29,10 +31,16 @@ func NewProductService(productRepository repository.ProductRepository) DefaultPr
 }
 
 func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) (*dto.CreateProductResponse, *errs.AppError) {
+	var price float32
+	if s, err := strconv.ParseFloat(request.Price, 32); err == nil {
+		price = float32(s)
+	} else {
+		return nil, errs.NewBadRequestError("Invalid price")
+	}
 	product, err := s.productRepository.Save(models.Product{
 		Name:        request.Name,
 		Description: request.Description,
-		Price:       request.Price,
+		Price:       price,
 		CategoryID:  request.CategoryID,
 		SellerID:    request.SellerID,
 		OldPrice:    request.OldPrice,
