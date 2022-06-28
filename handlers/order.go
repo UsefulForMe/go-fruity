@@ -117,25 +117,24 @@ func (h OrderHandler) ChangeOrderStatus() gin.HandlerFunc {
 		orderId := uuid.MustParse(c.Param("order_id"))
 		req.OrderID = orderId
 
-		user := c.MustGet("user").(models.User)
-		req.UserID = user.ID
+		req.UserID = uuid.MustParse("0c9a05cb-407c-43c1-b855-88a034ad8f01")
 
 		res, err := h.orderService.ChangeOrderStatus(req)
 		if err != nil {
 			WriteResponseError(c, err)
 		} else {
 
-			title := getTitle(res.Order.Status)
-			body := getBody(res.Order)
-			go h.firebaseFCM.SendNotification(dto.SendNotificationRequest{
-				Title: title,
-				Body:  body,
-				Token: user.FCMToken,
-				Data: map[string]string{
-					"id":     res.Order.ID.String(),
-					"action": "/view_order",
-				},
-			})
+			// title := getTitle(res.Order.Status)
+			// body := getBody(res.Order)
+			// go h.firebaseFCM.SendNotification(dto.SendNotificationRequest{
+			// 	Title: title,
+			// 	Body:  body,
+			// 	Token: user.FCMToken,
+			// 	Data: map[string]string{
+			// 		"id":     res.Order.ID.String(),
+			// 		"action": "/view_order",
+			// 	},
+			// })
 			WriteResponse(c, http.StatusOK, res)
 		}
 	}
