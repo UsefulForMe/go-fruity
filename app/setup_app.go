@@ -38,7 +38,7 @@ func SetupApp() *gin.Engine {
 		v.RegisterCustomTypeFunc(ValidateJSONDateType, dto.LocalTime{})
 	}
 
-	app.Use(cors.Default())
+	app.Use(cors.AllowAll())
 	// app.Use(middleware.Cors(), middleware.RequestLogger(), gin.Recovery())
 	router.SetupRoute(app)
 
