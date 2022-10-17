@@ -62,7 +62,6 @@ func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) 
 		"price":    strconv.FormatFloat(float64(product.Price), 'f', 2, 32),
 		"unit":     *product.Unit,
 		"imageUrl": product.ImageURL,
-		"origin":   *product.Origin,
 	})
 	// send this to index product on elastic search
 	go func() {
