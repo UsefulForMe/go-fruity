@@ -66,10 +66,14 @@ func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) 
 	})
 	// send this to index product on elastic search
 	go func() {
-		_, err := http.Post("http://localhost:9200/product/_doc", "application/json", bytes.NewBuffer(postBody))
-		if err != nil {
-			fmt.Println(err)
-		}
+		// set header
+
+		req, _ := http.NewRequest("POST", "https://fruity.es.us-central1.gcp.cloud.es.io/product/_doc", bytes.NewBuffer(postBody))
+		req.Header.Set("Authorization", "Basic ZWxhc3RpYzpWMTM4ZG9nN3RPN0JrTW9mN2hQZktKTVA=")
+		req.Header.Set("Content-Type", "application/json")
+		client := &http.Client{}
+		res, _ := client.Do(req)
+		fmt.Println(res)
 	}()
 
 	if err != nil {
