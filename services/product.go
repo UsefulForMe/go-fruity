@@ -59,9 +59,9 @@ func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) 
 	postBody, _ := json.Marshal(map[string]string{
 		"id":       product.ID.String(),
 		"name":     product.Name,
-		"price":    strconv.FormatFloat(float64(product.Price), 'f', 2, 32),
-		"unit":     *product.Unit,
-		"imageUrl": product.ImageURL,
+		"price":    "200000",
+		"unit":     "Cai",
+		"imageUrl": "",
 	})
 	// send this to index product on elastic search
 	go func() {
@@ -70,6 +70,7 @@ func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) 
 		req, _ := http.NewRequest("POST", "https://fruity.es.us-central1.gcp.cloud.es.io/product/_doc", bytes.NewBuffer(postBody))
 		req.Header.Set("Authorization", "Basic ZWxhc3RpYzpWMTM4ZG9nN3RPN0JrTW9mN2hQZktKTVA=")
 		req.Header.Set("Content-Type", "application/json")
+
 		client := &http.Client{}
 		res, _ := client.Do(req)
 		fmt.Println(res)
