@@ -6,11 +6,12 @@ import (
 
 	"github.com/UsefulForMe/go-ecommerce/config"
 	"github.com/UsefulForMe/go-ecommerce/dto"
-	middleware "github.com/UsefulForMe/go-ecommerce/middlewares"
+
 	router "github.com/UsefulForMe/go-ecommerce/routers"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator"
+	cors "github.com/rs/cors/wrapper/gin"
 )
 
 func ValidateJSONDateType(field reflect.Value) interface{} {
@@ -37,7 +38,7 @@ func SetupApp() *gin.Engine {
 		v.RegisterCustomTypeFunc(ValidateJSONDateType, dto.LocalTime{})
 	}
 
-	app.Use(middleware.Cors())
+	app.Use(cors.Default())
 	// app.Use(middleware.Cors(), middleware.RequestLogger(), gin.Recovery())
 	router.SetupRoute(app)
 
