@@ -1,6 +1,10 @@
 package services
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/UsefulForMe/go-ecommerce/dto"
@@ -52,6 +56,22 @@ func (s DefaultProductService) CreateProduct(request *dto.CreateProductRequest) 
 		ImageURLS:   request.ImageURLS,
 		Packs:       request.Packs,
 	})
+	postBody, _ := json.Marshal(map[string]string{
+		"id":       product.ID.String(),
+		"name":     product.Name,
+		"price":    strconv.FormatFloat(float64(product.Price), 'f', 2, 32),
+		"unit":     *product.Unit,
+		"imageUrl": product.ImageURL,
+		"origin":   *product.Origin,
+	})
+	// send this to index product on elastic search
+	go func() {
+		_, err := http.Post("http://localhost:9200/product/_doc", "application/json", bytes.NewBuffer(postBody))
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
+
 	if err != nil {
 		return nil, err
 	}
